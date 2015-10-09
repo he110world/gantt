@@ -21,9 +21,12 @@
   },
   "homepage": "https://github.com/he110world/gantt#readme",
   "dependencies": {
+    "browserchannel": "^2.0.0",
+    "diffop": "^1.1.0",
     "livedb": "^0.5.13",
     "livedb-mongo": "^0.4.1",
     "optimist": "^0.6.1",
+    "ottypes": "^1.0.3",
     "share": "^0.7.40"
   }
 }
