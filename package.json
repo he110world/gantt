@@ -1,0 +1,29 @@
+{
+  "name": "gantt",
+  "version": "0.0.1",
+  "description": "collaborative gantt graph editor",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/he110world/gantt.git"
+  },
+  "keywords": [
+    "collaborative",
+    "gantt"
+  ],
+  "author": "he110world",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/he110world/gantt/issues"
+  },
+  "homepage": "https://github.com/he110world/gantt#readme",
+  "dependencies": {
+    "livedb": "^0.5.13",
+    "livedb-mongo": "^0.4.1",
+    "optimist": "^0.6.1",
+    "share": "^0.7.40"
+  }
+}
