@@ -20,7 +20,8 @@
  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-function GanttMaster() {
+function GanttMaster(redrawCallback) {
+  this.redrawCallback = redrawCallback;
   this.tasks = [];
   this.deletedTaskIds = [];
   this.links = [];
@@ -505,6 +506,11 @@ GanttMaster.prototype.taskIsChanged = function () {
     //var profiler = new Profiler("gm_taskIsChangedReal");
     master.editor.redraw();
     master.gantt.refreshGantt();
+
+    console.log('changed');
+    if (master.redrawCallback) {
+      master.redrawCallback();
+    }
     //profiler.stop();
   });
   //profilerext.stop();
@@ -514,6 +520,11 @@ GanttMaster.prototype.taskIsChanged = function () {
 GanttMaster.prototype.redraw = function () {
   this.editor.redraw();
   this.gantt.refreshGantt();
+
+  console.log('redraw');
+  if (this.redrawCallback) {
+    this.redrawCallback();
+  }
 };
 
 GanttMaster.prototype.reset = function () {
@@ -556,9 +567,9 @@ GanttMaster.prototype.saveGantt = function (forTransaction) {
   }
 
   var ret = {tasks:saved};
-  if (this.currentTask) {
-    ret.selectedRow = this.currentTask.getRow();
-  }
+  // if (this.currentTask) {
+  //   ret.selectedRow = this.currentTask.getRow();
+  // }
 
   ret.deletedTaskIds = this.deletedTaskIds;  //this must be consistent with transactions and undo
 

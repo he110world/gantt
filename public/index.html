@@ -11,8 +11,8 @@
   <link rel=stylesheet href="gantt.css" type="text/css">
   <link rel=stylesheet href="ganttPrint.css" type="text/css" media="print">
 
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+  <script src="libs/jquery.min.js"></script>
+  <script src="libs/jquery-ui.min.js"></script>
 
   <script src="libs/jquery.livequery.min.js"></script>
   <script src="libs/jquery.timers.js"></script>
@@ -51,7 +51,7 @@
 <div id="ndo" style="position:absolute;right:5px;top:5px;width:378px;padding:5px;background-color: #FFF5E6; border:1px solid #F9A22F; font-size:12px" class="noprint">
   This Gantt editor is free thanks to <a href="http://twproject.com" target="_blank">Twproject</a> where it can be used on a complete and flexible project management solution.<br> Get your projects done! Give <a href="http://twproject.com" target="_blank">Twproject a try now</a>.
 </div>
-
+<!-- 
 <div id="taZone">
    <textarea rows="8" cols="150" id="ta">
      {"tasks":[
@@ -69,7 +69,7 @@
   <button onclick="loadGanttFromServer();">load</button>
 </div>
 
-<div id="workSpace" style="padding:0px; overflow-y:auto; overflow-x:hidden;border:1px solid #e5e5e5;position:relative;margin:0 5px"></div>
+ --><div id="workSpace" style="padding:0px; overflow-y:auto; overflow-x:hidden;border:1px solid #e5e5e5;position:relative;margin:0 5px"></div>
 
 <style>
   .resEdit {
@@ -104,7 +104,7 @@
 var ge;  //this is the hugly but very friendly global var for the gantt editor
 var bcsocket, sjs, doc, context;
 var emptyGantt = {"tasks":[],"selectedRow":0,"deletedTaskIds":[],"resources":[],"roles":[],"canWrite":true,"canWriteOnParent":true,"splitterPosition":60,"zoom":"m"};
-var currentGantt;
+var oldGantt;
 
 // init ShareJS
 function initShareJS (cb) {
@@ -116,9 +116,18 @@ function initShareJS (cb) {
     if (!doc.type) {
       doc.create('json0', emptyGantt);
     }
-    context = doc.createContext();
+    context = doc.createContext(); 
     cb();
   }); 
+  doc.on('after op', function(op, islocal){
+    if (!islocal) {
+      loadGanttFromServer();
+    }
+  });
+}
+
+function onRedraw () {
+  saveGanttOnServer();
 }
 
 function initGantt () {
@@ -126,7 +135,7 @@ function initGantt () {
   $("#ganttemplates").loadTemplates();
 
   // here starts gantt initialization
-  ge = new GanttMaster();
+  ge = new GanttMaster(onRedraw);
   var workSpace = $("#workSpace");
   workSpace.css({width:$(window).width() - 20,height:$(window).height() - 100});
   ge.init(workSpace);
@@ -173,14 +182,70 @@ $(function() {
 });
 
 
-function loadGanttFromServer(taskId, callback) {
+//-------------------------------------------  ShareJS ------------------------------------------------------
+function doLoadGantt () {
+  // $("#taZone").show();
+  var ret = context.getSnapshot();
+  // $('#ta').val(JSON.stringify(ret));
+  ge.loadProject(ret);
+  ge.checkpoint();
 
-  loadFromShareJS();
+  oldGantt = ge.saveProject();
+}
+
+function loadGanttFromServer() {
+  console.log('load');
+  if (!context) {
+    return;
+  }
+
+  // any unsaved local changes?
+  var newGantt = ge.saveProject();
+  var ops;
+  if (oldGantt) {
+    ops = window.diffop(oldGantt, newGantt);
+  }
+  if (ops && ops.length) {
+    oldGantt = newGantt;
+    context.submitOp(ops, doLoadGantt);
+  } else {
+    doLoadGantt();
+  }
+}
+
+function saveGanttOnServer() {
+  console.log('save');
+  throw new Error('haha');
+  if(!ge.canWrite || !context)
+    return;
+
+  var newGantt = ge.saveProject();
+  var ops;
+  if (oldGantt) {
+    ops = window.diffop(oldGantt, newGantt);
+  } else {
+    ops = window.diffop(context.getSnapshot(), newGantt);
+  }
+  if (ops && ops.length) {
+    oldGantt = newGantt;
+    context.submitOp(ops);
+  }
+  /*
+  if (context) {
+    context.set(ge.saveProject(), function(){
+      $('#ta').val(JSON.stringify(context.get()));
+    });
+  }
+  */
+}
+
+  /*
+function (taskId, callback) {
+
   //this is a simulation: load data from the local storage if you have already played with the demo or a textarea with starting demo data
 //  loadFromLocalStorage();
 
   //this is the real implementation
-  /*
   //var taskId = $("#taskSelector").val();
   var prof = new Profiler("loadServerSide");
   prof.reset();
@@ -200,10 +265,11 @@ function loadGanttFromServer(taskId, callback) {
       jsonErrorHandling(response);
     }
   });
-  */
 }
+  */
 
 
+  /*
 function saveGanttOnServer() {
   if(!ge.canWrite)
     return;
@@ -213,8 +279,6 @@ function saveGanttOnServer() {
   saveInShareJS();
 //  saveInLocalStorage();
 
-
-  /*
   var prj = ge.saveProject();
 
   delete prj.resources;
@@ -257,8 +321,8 @@ function saveGanttOnServer() {
     }
 
   });
-  */
 }
+  */
 
 
 //-------------------------------------------  Create some demo data ------------------------------------------------------
@@ -329,31 +393,6 @@ function getFile() {
 
   /*  var uriContent = "data:text/html;charset=utf-8," + encodeURIComponent(JSON.stringify(prj));
    neww=window.open(uriContent,"dl");*/
-}
-
-//-------------------------------------------  ShareJS ------------------------------------------------------
-function loadFromShareJS () {
-  if (context) {
-    $("#taZone").show();
-    var ret = context.getSnapshot();
-    $('#ta').val(JSON.stringify(ret));
-    ge.loadProject(ret);
-    ge.checkpoint();
-  }
-}
-
-function saveInShareJS () {
-  var s = ge.saveProject();
-  var ops = window.diffop(context.getSnapshot(), s);
-  console.log(ops);
-  context.submitOp(ops);
-  /*
-  if (context) {
-    context.set(ge.saveProject(), function(){
-      $('#ta').val(JSON.stringify(context.get()));
-    });
-  }
-  */
 }
 
 //-------------------------------------------  LOCAL STORAGE MANAGEMENT (for this demo only) ------------------------------------------------------
