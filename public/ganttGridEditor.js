@@ -287,7 +287,6 @@ GridEditor.prototype.bindRowInputEvents = function (task, taskRow) {
     });
   });
 
-
   //binding on blur for task update (date exluded as click on calendar blur and then focus, so will always return false, its called refreshing the task row)
   taskRow.find("input:not(.date)").focus(function () {
     $(this).updateOldValue();
@@ -444,6 +443,11 @@ GridEditor.prototype.bindRowInputEvents = function (task, taskRow) {
     } else if (top<40){
       row.offsetParent().scrollTop(row.offsetParent().scrollTop()-40+top);
     }
+  });
+
+  taskRow.on('input propertychange paste', function(){
+    self.master.dirty = true;
+    console.log('dirty');
   });
 
 };

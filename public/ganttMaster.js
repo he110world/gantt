@@ -351,7 +351,6 @@ GanttMaster.prototype.addTask = function (task, row) {
   return ret;
 };
 
-
 /**
  * a project contais tasks, resources, roles, and info about permisions
  * @param project
@@ -395,7 +394,6 @@ GanttMaster.prototype.loadProject = function (project) {
   var self = this;
   this.gantt.element.oneTime(200, function () {self.gantt.centerOnToday()});
 };
-
 
 GanttMaster.prototype.loadTasks = function (tasks, selectedRow) {
   var factory = new TaskFactory();
@@ -854,6 +852,7 @@ GanttMaster.prototype.beginTransaction = function () {
   } else {
     console.error("Cannot open twice a transaction");
   }
+
   return this.__currentTransaction;
 };
 

@@ -46,30 +46,7 @@
   <script src="ganttMaster.js"></script>  
 </head>
 <body style="background-color: #fff;">
-
-
-<div id="ndo" style="position:absolute;right:5px;top:5px;width:378px;padding:5px;background-color: #FFF5E6; border:1px solid #F9A22F; font-size:12px" class="noprint">
-  This Gantt editor is free thanks to <a href="http://twproject.com" target="_blank">Twproject</a> where it can be used on a complete and flexible project management solution.<br> Get your projects done! Give <a href="http://twproject.com" target="_blank">Twproject a try now</a>.
-</div>
-<!-- 
-<div id="taZone">
-   <textarea rows="8" cols="150" id="ta">
-     {"tasks":[
-     {"id":-1,"name":"Gantt editor","code":"","level":0,"status":"STATUS_ACTIVE","canWrite":true,"start":1396994400000,"duration":21,"end":1399672799999,"startIsMilestone":true,"endIsMilestone":false,"collapsed":false,"assigs":[],"hasChild":true}
-     ,{"id":-2,"name":"coding","code":"","level":1,"status":"STATUS_ACTIVE","canWrite":true,"start":1396994400000,"duration":10,"end":1398203999999,"startIsMilestone":false,"endIsMilestone":false,"collapsed":false,"assigs":[],"description":"","progress":0,"hasChild":true}
-     ,{"id":-3,"name":"gantt part","code":"","level":2,"status":"STATUS_ACTIVE","canWrite":true,"start":1396994400000,"duration":2,"end":1397167199999,"startIsMilestone":false,"endIsMilestone":false,"collapsed":false,"assigs":[],"depends":"","hasChild":false}
-     ,{"id":-4,"name":"editor part","code":"","level":2,"status":"STATUS_SUSPENDED","canWrite":true,"start":1397167200000,"duration":4,"end":1397685599999,"startIsMilestone":false,"endIsMilestone":false,"collapsed":false,"assigs":[],"depends":"3","hasChild":false}
-     ,{"id":-5,"name":"testing","code":"","level":1,"status":"STATUS_SUSPENDED","canWrite":true,"start":1398981600000,"duration":6,"end":1399672799999,"startIsMilestone":false,"endIsMilestone":false,"collapsed":false,"assigs":[],"depends":"2:5","description":"","progress":0,"hasChild":true}
-     ,{"id":-6,"name":"test on safari","code":"","level":2,"status":"STATUS_SUSPENDED","canWrite":true,"start":1398981600000,"duration":2,"end":1399327199999,"startIsMilestone":false,"endIsMilestone":false,"collapsed":false,"assigs":[],"depends":"","hasChild":false}
-     ,{"id":-7,"name":"test on ie","code":"","level":2,"status":"STATUS_SUSPENDED","canWrite":true,"start":1399327200000,"duration":3,"end":1399586399999,"startIsMilestone":false,"endIsMilestone":false,"collapsed":false,"assigs":[],"depends":"6","hasChild":false}
-     ,{"id":-8,"name":"test on chrome","code":"","level":2,"status":"STATUS_SUSPENDED","canWrite":true,"start":1399327200000,"duration":2,"end":1399499999999,"startIsMilestone":false,"endIsMilestone":false,"collapsed":false,"assigs":[],"depends":"6","hasChild":false}
-     ],"selectedRow":0,"canWrite":true,"canWriteOnParent":true}
-   </textarea>
-
-  <button onclick="loadGanttFromServer();">load</button>
-</div>
-
- --><div id="workSpace" style="padding:0px; overflow-y:auto; overflow-x:hidden;border:1px solid #e5e5e5;position:relative;margin:0 5px"></div>
+<div id="workSpace" style="padding:0px; overflow-y:auto; overflow-x:hidden;border:1px solid #e5e5e5;position:relative;margin:0 5px"></div>
 
 <style>
   .resEdit {
@@ -96,21 +73,18 @@
 
 </style>
 
-<form id="gimmeBack" style="display:none;" action="../gimmeBack.jsp" method="post" target="_blank"><input type="hidden" name="prj" id="gimBaPrj"></form>
-
 <script type="text/javascript">
-
 
 var ge;  //this is the hugly but very friendly global var for the gantt editor
 var bcsocket, sjs, doc, context;
-var emptyGantt = {"tasks":[],"selectedRow":0,"deletedTaskIds":[],"resources":[],"roles":[],"canWrite":true,"canWriteOnParent":true,"splitterPosition":60,"zoom":"m"};
+var emptyGantt = {"tasks":[],"resources":[],"roles":[],"canWrite":true};
 var oldGantt;
 
 // init ShareJS
 function initShareJS (cb) {
   bcsocket = new BCSocket(null, {reconnect: true});
   sjs = new window.sharejs.Connection(bcsocket);
-  doc = sjs.get('json_test', 'test_doc_2');
+  doc = sjs.get('json_test', 'test_doc_4');
   doc.subscribe();
   doc.whenReady(function () {
     if (!doc.type) {
@@ -120,7 +94,8 @@ function initShareJS (cb) {
     cb();
   }); 
   doc.on('after op', function(op, islocal){
-    if (!islocal) {
+    if (!islocal && !ge.dirty) {
+      // if no unsaved changes
       loadGanttFromServer();
     }
   });
@@ -142,9 +117,9 @@ function initGantt () {
 
   //inject some buttons (for this demo only)
   $(".ganttButtonBar div").append("<button onclick='clearGantt();' class='button'>clear</button>")
-          .append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
+          // .append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
           .append("<button onclick='getFile();' class='button'>export</button>");
-  $(".ganttButtonBar h1").html("<a href='http://twproject.com' title='Twproject the friendly project and work management tool' target='_blank'><img width='80%' src='res/twBanner.jpg'></a>");
+  // $(".ganttButtonBar h1").html("<a href='http://twproject.com' title='Twproject the friendly project and work management tool' target='_blank'><img width='80%' src='res/twBanner.jpg'></a>");
   $(".ganttButtonBar div").addClass('buttons');
   //overwrite with localized ones
   loadI18n();
@@ -199,6 +174,9 @@ function loadGanttFromServer() {
     return;
   }
 
+  doLoadGantt();
+
+/*
   // any unsaved local changes?
   var newGantt = ge.saveProject();
   var ops;
@@ -211,11 +189,11 @@ function loadGanttFromServer() {
   } else {
     doLoadGantt();
   }
+  */
 }
 
 function saveGanttOnServer() {
   console.log('save');
-  throw new Error('haha');
   if(!ge.canWrite || !context)
     return;
 
@@ -230,6 +208,7 @@ function saveGanttOnServer() {
     oldGantt = newGantt;
     context.submitOp(ops);
   }
+  ge.dirty = false;
   /*
   if (context) {
     context.set(ge.saveProject(), function(){
@@ -513,7 +492,6 @@ function editResources(){
 <div id="gantEditorTemplates" style="display:none;">
   <div class="__template__" type="GANTBUTTONS"><!--
   <div class="ganttButtonBar noprint">
-    <h1 style="float:left">task tree/gantt</h1>
     <div class="buttons">
     <button onclick="$('#workSpace').trigger('undo.gantt');" class="button textual" title="undo"><span class="teamworkIcon">&#39;</span></button>
     <button onclick="$('#workSpace').trigger('redo.gantt');" class="button textual" title="redo"><span class="teamworkIcon">&middot;</span></button>
@@ -548,13 +526,14 @@ function editResources(){
     <tr style="height:40px">
       <th class="gdfColHeader" style="width:35px;"></th>
       <th class="gdfColHeader" style="width:25px;"></th>
-      <th class="gdfColHeader gdfResizable" style="width:30px;">code/short name</th>
+      <th class="gdfColHeader gdfResizable" style="width:30px;">tag</th>
 
       <th class="gdfColHeader gdfResizable" style="width:300px;">name</th>
       <th class="gdfColHeader gdfResizable" style="width:80px;">start</th>
       <th class="gdfColHeader gdfResizable" style="width:80px;">end</th>
       <th class="gdfColHeader gdfResizable" style="width:50px;">dur.</th>
       <th class="gdfColHeader gdfResizable" style="width:50px;">dep.</th>
+      <th class="gdfColHeader gdfResizable" style="width:50px;">%</th>
       <th class="gdfColHeader gdfResizable" style="width:200px;">assignees</th>
     </tr>
     </thead>
@@ -575,6 +554,7 @@ function editResources(){
     <td class="gdfCell"><input type="text" name="end" value="" class="date"></td>
     <td class="gdfCell"><input type="text" name="duration" value="(#=obj.duration#)"></td>
     <td class="gdfCell"><input type="text" name="depends" value="(#=obj.depends#)" (#=obj.hasExternalDep?"readonly":""#)></td>
+    <td class="gdfCell"><input type="text" name="progress" value="(#=obj.progress#)"></td>
     <td class="gdfCell taskAssigs">(#=obj.getAssigsString()#)</td>
   </tr>
   --></div>
@@ -624,7 +604,7 @@ function editResources(){
       <td>
         <table cellpadding="5">
           <tr>
-            <td><label for="code">code/short name</label><br><input type="text" name="code" id="code" value="" class="formElements"></td>
+            <td><label for="code">tag</label><br><input type="text" name="code" id="code" value="" class="formElements"></td>
            </tr><tr>
             <td><label for="name">name</label><br><input type="text" name="name" id="name" value=""  size="35" class="formElements"></td>
           </tr>
