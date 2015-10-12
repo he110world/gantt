@@ -425,6 +425,7 @@ Ganttalendar.prototype.drawTask = function (task) {
           $(".ganttSVGBox .focused").removeClass("focused");
         },
         drag:       function (e) {
+          self.master.dirty = true;
           $("[from=" + task.id + "],[to=" + task.id + "]").trigger("update");
         },
         drop:       function (e) {
@@ -444,6 +445,7 @@ Ganttalendar.prototype.drawTask = function (task) {
           taskBox.data("textDur", text);
         },
         resize:     function (e) {
+          self.master.dirty = true;
           //find and update links from, to
           var taskbox = $(this);
           var st = Math.round((parseFloat(taskbox.attr("x")) / self.fx) + self.startMillis);
@@ -489,6 +491,7 @@ Ganttalendar.prototype.drawTask = function (task) {
 
       //bind mousemove to draw a line
       svg.bind("mousemove.linkSVG", function (e) {
+        self.master.dirty = true;
         var offs = svg.offset();
         var nx = e.pageX - offs.left;
         var ny = e.pageY - offs.top;

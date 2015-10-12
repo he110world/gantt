@@ -823,7 +823,10 @@ $(document).ready(function() {
   $('.validated').livequery('blur', validateField);
 });
 
-function openBlackPopup(url,width,height,onCloseCallBack,iframeId){
+function openBlackPopup(url,width,height,onCloseCallBack,iframeId, overlayColor){
+  if (!overlayColor)
+    overlayColor = "rgba(45,51,57,0.7)";
+
   if(!iframeId)
     iframeId="bwinPopup";
 
@@ -840,7 +843,8 @@ function openBlackPopup(url,width,height,onCloseCallBack,iframeId){
 
   //add black only if not already in blackpupup
   if(window.name!=iframeId)
-    bg.css({backgroundImage:"url('"+contextPath+"/applications/teamwork/images/black_70.png')"});
+    bg.css({backgroundColor: overlayColor});
+//    bg.css({backgroundImage:"url('"+contextPath+"/applications/teamwork/images/black_70.png')"});
 
   bg.append("<iframe id='"+iframeId+"' name='"+iframeId+"' frameborder='0'></iframe>");
   bg.bringToFront();
@@ -875,7 +879,10 @@ function openBlackPopup(url,width,height,onCloseCallBack,iframeId){
 
 
 //returns a jquery object where to write content
-function createBlackPage(width,height,onCloseCallBack){
+function createBlackPage(width,height,onCloseCallBack,overlayColor){
+  if (!overlayColor)
+    overlayColor = "rgba(45,51,57,0.7)"; 
+
   if (!width)
     width='900px';
   if (!height)
@@ -884,7 +891,8 @@ function createBlackPage(width,height,onCloseCallBack){
   $("#__blackpopup__").remove();
 
   var bg=$("<div>").attr("id","__blackpopup__");
-  bg.css({position:'fixed',top:"0px",paddingTop:"50px", left:0,width:'100%',height:'100%',  backgroundImage:"url('res/img/black_70.png')"});
+  bg.css({position:'fixed', top:0, left:0, width:'100%', height:'100%', backgroundColor: overlayColor });
+//  bg.css({position:'fixed',top:"0px",paddingTop:"50px", left:0,width:'100%',height:'100%',  backgroundImage:"url('res/img/black_70.png')"});
   bg.append("<div id='bwinPopupd' name='bwinPopupd'></div>");
   bg.bringToFront();
 

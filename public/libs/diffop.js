@@ -171,10 +171,14 @@ OpsFormatter.prototype.nodeEnd = function(context, key, leftKey, type, nodeType,
 
 
 // Handle unchanged nodes
-OpsFormatter.prototype.format_unchanged = function(context, delta, left) {};
+OpsFormatter.prototype.format_unchanged = function(context, delta, left) {
+  console.log('unchanged');
+};
 
 // Handle move destinations
-OpsFormatter.prototype.format_movedestination = function(context, delta, left) {};
+OpsFormatter.prototype.format_movedestination = function(context, delta, left) {
+  console.log('movedestination');
+};
 
 // Handle nodes
 OpsFormatter.prototype.format_node = function(context, delta, left, key) {

@@ -357,7 +357,7 @@ GanttMaster.prototype.addTask = function (task, row) {
  */
 GanttMaster.prototype.loadProject = function (project) {
   //console.debug("loadProject",project)
-  this.beginTransaction();
+//  this.beginTransaction();
   this.resources = project.resources;
   this.roles = project.roles;
   this.canWrite = project.canWrite;
@@ -387,12 +387,12 @@ GanttMaster.prototype.loadProject = function (project) {
 
 
   //[expand]
-  //this.gantt.refreshGantt();
+  this.editor.redraw();
+  this.gantt.refreshGantt();
 
-
-  this.endTransaction();
-  var self = this;
-  this.gantt.element.oneTime(200, function () {self.gantt.centerOnToday()});
+//  this.endTransaction();
+//  var self = this;
+//  this.gantt.element.oneTime(200, function () {self.gantt.centerOnToday()});
 };
 
 GanttMaster.prototype.loadTasks = function (tasks, selectedRow) {
@@ -576,8 +576,8 @@ GanttMaster.prototype.saveGantt = function (forTransaction) {
     ret.roles = this.roles;
     ret.canWrite = this.canWrite;
     ret.canWriteOnParent = this.canWriteOnParent;
-    ret.splitterPosition=this.splitter.perc;
-    ret.zoom=this.gantt.zoom;
+//    ret.splitterPosition=this.splitter.perc;
+//    ret.zoom=this.gantt.zoom;
   }
 
   //prof.stop();

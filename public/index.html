@@ -26,7 +26,8 @@
   <script src="channel/bcsocket.js"></script>
   <script src="libs/json0.js"></script>
   <script src="libs/share.min.js"></script>
-  <script src="libs/diffop.js"></script>
+  <script src="libs/jsondiffops.js"></script>
+  <!--script src="libs/diffop.js"></script-->
 
   <link rel="stylesheet" type="text/css" href="libs/jquery.svg.css">
   <script type="text/javascript" src="libs/jquery.svg.min.js"></script>
@@ -162,6 +163,9 @@ function doLoadGantt () {
   // $("#taZone").show();
   var ret = context.getSnapshot();
   // $('#ta').val(JSON.stringify(ret));
+  if (ge.currentTask) {
+    ret.selectedRow = ge.currentTask.getRow();
+  }
   ge.loadProject(ret);
   ge.checkpoint();
 
@@ -193,7 +197,6 @@ function loadGanttFromServer() {
 }
 
 function saveGanttOnServer() {
-  console.log('save');
   if(!ge.canWrite || !context)
     return;
 
@@ -205,6 +208,7 @@ function saveGanttOnServer() {
     ops = window.diffop(context.getSnapshot(), newGantt);
   }
   if (ops && ops.length) {
+    console.log('submit op');
     oldGantt = newGantt;
     context.submitOp(ops);
   }
@@ -684,6 +688,10 @@ function editResources(){
 
 </div>
 <script type="text/javascript">
+  $.JST.loadDecorator("RESOURCE_ROW", function(resTr, res){
+    resTr.find(".delRes").click(function(){$(this).closest("tr").remove()});
+  });
+
   $.JST.loadDecorator("ASSIGNMENT_ROW", function(assigTr, taskAssig) {
 
     var resEl = assigTr.find("[name=resourceId]");
