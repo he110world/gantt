@@ -276,100 +276,7 @@ function saveGanttOnServer() {
     context.submitOp(ops);
   }
   ge.dirty = false;
-  /*
-  if (context) {
-    context.set(ge.saveProject(), function(){
-      $('#ta').val(JSON.stringify(context.get()));
-    });
-  }
-  */
 }
-
-  /*
-function (taskId, callback) {
-
-  //this is a simulation: load data from the local storage if you have already played with the demo or a textarea with starting demo data
-//  loadFromLocalStorage();
-
-  //this is the real implementation
-  //var taskId = $("#taskSelector").val();
-  var prof = new Profiler("loadServerSide");
-  prof.reset();
-
-  $.getJSON("ganttAjaxController.jsp", {CM:"LOADPROJECT",taskId:taskId}, function(response) {
-    //console.debug(response);
-    if (response.ok) {
-      prof.stop();
-
-      ge.loadProject(response.project);
-      ge.checkpoint(); //empty the undo stack
-
-      if (typeof(callback)=="function") {
-        callback(response);
-      }
-    } else {
-      jsonErrorHandling(response);
-    }
-  });
-}
-  */
-
-
-  /*
-function saveGanttOnServer() {
-  if(!ge.canWrite)
-    return;
-
-
-  //this is a simulation: save data to the local storage or to the textarea
-  saveInShareJS();
-//  saveInLocalStorage();
-
-  var prj = ge.saveProject();
-
-  delete prj.resources;
-  delete prj.roles;
-
-  var prof = new Profiler("saveServerSide");
-  prof.reset();
-
-  if (ge.deletedTaskIds.length>0) {
-    if (!confirm("TASK_THAT_WILL_BE_REMOVED\n"+ge.deletedTaskIds.length)) {
-      return;
-    }
-  }
-
-  $.ajax("ganttAjaxController.jsp", {
-    dataType:"json",
-    data: {CM:"SVPROJECT",prj:JSON.stringify(prj)},
-    type:"POST",
-
-    success: function(response) {
-      if (response.ok) {
-        prof.stop();
-        if (response.project) {
-          ge.loadProject(response.project); //must reload as "tmp_" ids are now the good ones
-        } else {
-          ge.reset();
-        }
-      } else {
-        var errMsg="Errors saving project\n";
-        if (response.message) {
-          errMsg=errMsg+response.message+"\n";
-        }
-
-        if (response.errorMessages.length) {
-          errMsg += response.errorMessages.join("\n");
-        }
-
-        alert(errMsg);
-      }
-    }
-
-  });
-}
-  */
-
 
 //-------------------------------------------  Create some demo data ------------------------------------------------------
 function setRoles() {
@@ -445,42 +352,6 @@ Storage.prototype.setObject = function(key, value) {
 Storage.prototype.getObject = function(key) {
   return this.getItem(key) && JSON.parse(this.getItem(key));
 };
-
-
-function loadFromLocalStorage() {
-  var ret;
-  // if (localStorage) {
-  //   if (localStorage.getObject("teamworkGantDemo")) {
-  //     ret = localStorage.getObject("teamworkGantDemo");
-  //   }
-  // } else {
-    $("#taZone").show();
-  // }
-  if (!ret || !ret.tasks || ret.tasks.length == 0){
-    ret = JSON.parse($("#ta").val());
-
-
-    //actualiza data
-    var offset=new Date().getTime()-ret.tasks[0].start;
-    for (var i=0;i<ret.tasks.length;i++)
-      ret.tasks[i].start=ret.tasks[i].start+offset;
-
-
-  }
-  ge.loadProject(ret);
-  ge.checkpoint(); //empty the undo stack
-}
-
-
-function saveInLocalStorage() {
-  var prj = ge.saveProject();
-  // if (localStorage) {
-  //   localStorage.setObject("teamworkGantDemo", prj);
-  // } else {
-    $("#ta").val(JSON.stringify(prj));
-  // }
-}
-
 
 //-------------------------------------------  Open a black popup for managing resources. This is only an axample of implementation (usually resources come from server) ------------------------------------------------------
 
@@ -586,6 +457,7 @@ function editResources(){
     <button onclick="$('#workSpace').trigger('undo.gantt');" class="button textual" title="undo"><span class="teamworkIcon">&#39;</span></button>
     <button onclick="$('#workSpace').trigger('redo.gantt');" class="button textual" title="redo"><span class="teamworkIcon">&middot;</span></button>
     <span class="ganttButtonSeparator"></span>
+    <button onclick="$('#workSpace').trigger('appendTask.gantt');" class="button textual" title="append task"><span class="teamworkIcon">P</span></button>
     <button onclick="$('#workSpace').trigger('addAboveCurrentTask.gantt');" class="button textual" title="insert above"><span class="teamworkIcon">l</span></button>
     <button onclick="$('#workSpace').trigger('addBelowCurrentTask.gantt');" class="button textual" title="insert below"><span class="teamworkIcon">X</span></button>
     <span class="ganttButtonSeparator"></span>
@@ -606,7 +478,7 @@ function editResources(){
     <span class="ganttButtonSeparator"></span>
     <button onclick="editResources();" class="button textual" title="edit resources"><span class="teamworkIcon">M</span></button>
     <span class="ganttButtonSeparator"></span>
-    <button onclick="showDocList();" class="button textual" title="load project"><span class="teamworkIcon">t</span></button>
+    <button onclick="showDocList();" class="button textual" title="load project"><span class="teamworkIcon">F</span></button>
     </div></div>
   --></div>
 

@@ -94,7 +94,7 @@
         data.forEach(function(doc){
           docs.push(doc._id);
         });
-        res.end(JSON.stringify(docs));
+        res.end(JSON.stringify(docs.sort()));
       });
     } catch (e) {
       res.end('[]');

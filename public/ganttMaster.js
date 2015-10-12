@@ -86,6 +86,8 @@ GanttMaster.prototype.init = function (place) {
 
     }).bind("deleteCurrentTask.gantt",function (e) {
       self.deleteCurrentTask();
+    }).bind("appendTask.gantt",function () {
+      self.appendTask();
     }).bind("addAboveCurrentTask.gantt",function () {
       self.addAboveCurrentTask();
     }).bind("addBelowCurrentTask.gantt",function () {
@@ -445,7 +447,7 @@ GanttMaster.prototype.loadTasks = function (tasks, selectedRow) {
     }
   }
 
-  this.editor.fillEmptyLines();
+//  this.editor.fillEmptyLines();
   //prof.stop();
 
   // re-select old row if tasks is not empty
@@ -783,6 +785,29 @@ GanttMaster.prototype.addBelowCurrentTask=function(){
   } else {
     ch = factory.build("tmp_" + new Date().getTime(), "", "", 0, new Date().getTime(), 1);
   }
+  var task = self.addTask(ch, row);
+  if (task) {
+    task.rowElement.click();
+    task.rowElement.find("[name=name]").focus();
+  }
+  self.endTransaction();
+};
+
+GanttMaster.prototype.appendTask=function(){
+  var self=this;
+  if (!self.canWrite)
+    return;
+  var factory = new TaskFactory();
+  self.beginTransaction();
+  var ch;
+  var row = 0;
+  // if (self.currentTask) {
+  //   ch = factory.build("tmp_" + new Date().getTime(), "", "", self.currentTask.level + 1, self.currentTask.start, 1);
+  //   row = self.currentTask.getRow() + 1;
+  // } else {
+    ch = factory.build("tmp_" + new Date().getTime(), "", "", 0, new Date().getTime(), 1);
+    row = self.tasks.length;
+  // }
   var task = self.addTask(ch, row);
   if (task) {
     task.rowElement.click();
