@@ -879,7 +879,7 @@ function openBlackPopup(url,width,height,onCloseCallBack,iframeId, overlayColor)
 
 
 //returns a jquery object where to write content
-function createBlackPage(width,height,onCloseCallBack,overlayColor){
+function createBlackPage(width,height,hideClose,onCloseCallBack,overlayColor){
   if (!overlayColor)
     overlayColor = "rgba(45,51,57,0.7)"; 
 
@@ -899,14 +899,15 @@ function createBlackPage(width,height,onCloseCallBack,overlayColor){
   var ret=bg.find("#bwinPopupd");
   ret.css({width:width, height:height,top:10, "-moz-box-shadow":'1px 1px 6px #333333',overflow:'auto',"-webkit-box-shadow":'1px 1px 6px #333333', border:'8px solid #777', backgroundColor:"#fff", margin:"auto" });
 
-  var bdiv= $("<div>").css({width:width,position:"relative",height:"0px", textAlign:"right", margin:"auto" });
-  var img=$("<img src='res/closeBig.png' style='cursor:pointer;position:absolute;right:-40px;top:5px;' title='close'>");
-  bdiv.append(img);
-  img.click( function(){
-    bg.trigger("close");
-  });
-
-  bg.prepend(bdiv);
+  if (!hideClose) {
+    var bdiv= $("<div>").css({width:width,position:"relative",height:"0px", textAlign:"right", margin:"auto" });
+    var img=$("<img src='res/closeBig.png' style='cursor:pointer;position:absolute;right:-40px;top:5px;' title='close'>");
+    bdiv.append(img);
+    img.click( function(){
+      bg.trigger("close");
+    });
+    bg.prepend(bdiv);
+  }
   $("body").append(bg);
 
   //close call callback

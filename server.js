@@ -86,6 +86,20 @@
   }));
 
   webserver.use('/doc', share.rest());
+  webserver.use('/docs', function (req, res, next) {
+    try {
+      var col = backend.snapshotDb.mongo.collection('gantt');
+      col.find({},{_id:1}).toArray(function(err, data){
+        var docs = [];
+        data.forEach(function(doc){
+          docs.push(doc._id);
+        });
+        res.end(JSON.stringify(docs));
+      });
+    } catch (e) {
+      res.end('[]');
+    }
+  });
 
   port = argv.p || 7007;
 

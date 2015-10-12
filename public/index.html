@@ -77,15 +77,75 @@
 <script type="text/javascript">
 
 var ge;  //this is the hugly but very friendly global var for the gantt editor
-var bcsocket, sjs, doc, context;
+var bcsocket, sjs, doc, context, docname;
 var emptyGantt = {"tasks":[],"resources":[],"roles":[],"canWrite":true};
 var oldGantt;
 
+function addDoc () {
+
+}
+
+function showDocList (hideClose) {
+  var docList = $.JST.createFromTemplate({}, "DOC_LIST");
+  var table=docList.find("#docListTable");
+
+  // get doc names
+  $.get('docs', function(result) {
+    try {
+      var list = JSON.parse(result);
+      list.forEach(function(name){
+        table.append($.JST.createFromTemplate({name:name}, "DOC_ROW"));
+      });
+    } catch (e) {
+    }
+  });
+
+  //bind add doc 
+  docList.find("#addDoc").click(function(){
+    var $newDoc = $.JST.createFromTemplate({}, "NEW_DOC_ROW");
+    table.append($newDoc);
+    docList.find("#addNewDoc").click(function(e){
+      var newName = $newDoc.find("input").val();
+      if (newName) {
+        $newDoc.remove();
+        table.append($.JST.createFromTemplate({name:newName}, "DOC_ROW"));
+      }
+    });
+  });
+
+  /*
+  for (var i=0;i<ge.resources.length;i++){
+    var res=ge.resources[i];
+    table.append($.JST.createFromTemplate(res, "DOC_ROW"));
+  }
+
+  //bind add resource
+  resourceEditor.find("#addDoc").click(function(){
+    table.append($.JST.createFromTemplate({id:"new",name:"New Gantt Graph"}, "DOC_ROW"))
+  });
+*/
+
+  var ndo = createBlackPage(400, 500, hideClose).append(docList);
+//  console.log(Object.keys(sjs.collections['gantt']));
+}
+
 // init ShareJS
 function initShareJS (cb) {
+  $('#docListTemplates').loadTemplates();
+
+  docname = window.location.search;
+  if (docname) {
+    docname = docname.split('=')[1];  // ?doc=docname
+  }
   bcsocket = new BCSocket(null, {reconnect: true});
   sjs = new window.sharejs.Connection(bcsocket);
-  doc = sjs.get('json_test', 'test_doc_4');
+
+  // get doc list
+  if (!docname) {
+    showDocList(true);
+    return;
+  }
+  doc = sjs.get('gantt', docname);
   doc.subscribe();
   doc.whenReady(function () {
     if (!doc.type) {
@@ -107,9 +167,6 @@ function onRedraw () {
 }
 
 function initGantt () {
-  //load templates
-  $("#ganttemplates").loadTemplates();
-
   // here starts gantt initialization
   ge = new GanttMaster(onRedraw);
   var workSpace = $("#workSpace");
@@ -117,10 +174,10 @@ function initGantt () {
   ge.init(workSpace);
 
   //inject some buttons (for this demo only)
-  $(".ganttButtonBar div").append("<button onclick='clearGantt();' class='button'>clear</button>")
-          // .append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
-          .append("<button onclick='getFile();' class='button'>export</button>");
-  // $(".ganttButtonBar h1").html("<a href='http://twproject.com' title='Twproject the friendly project and work management tool' target='_blank'><img width='80%' src='res/twBanner.jpg'></a>");
+  // $(".ganttButtonBar div").append("<button onclick='clearGantt();' class='button'>clear</button>")
+  //         // .append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
+  //         .append("<button onclick='getFile();' class='button'>export</button>");
+  $(".ganttButtonBar h1").html(docname);//"<a href='http://twproject.com' title='Twproject the friendly project and work management tool' target='_blank'><img width='80%' src='res/twBanner.jpg'></a>");
   $(".ganttButtonBar div").addClass('buttons');
   //overwrite with localized ones
   loadI18n();
@@ -153,10 +210,16 @@ function initGantt () {
   }).oneTime(150,"resize",function(){$(this).trigger("resize")});
 }
 
+/*
 $(function() {
+  //load templates
+//  $("#ganttemplates").loadTemplates();
   initShareJS(initGantt);
 });
-
+*/
+$( document ).ready(function() {
+  initShareJS(initGantt);
+});
 
 //-------------------------------------------  ShareJS ------------------------------------------------------
 function doLoadGantt () {
@@ -486,11 +549,39 @@ function editResources(){
 
 
 </script>
+<div id="docListTemplates" style="display:none;">
+  <div class="__template__" type="NEW_DOC_ROW"><!--
+  <tr docName="(#=obj.name#)">
+    <td>
+    <input type="text" value="">
+    <button type="button" id="addNewDoc">Save</button>
+    </td>
+    <td align="center"><span class="teamworkIcon delDoc" style="cursor: pointer">d</span></td>
+  </tr>
+  --></div>
+  <div class="__template__" type="DOC_ROW"><!--
+  <tr docName="(#=obj.name#)">
+    <td><a href="?doc=(#=obj.name#)">(#=obj.name#)</td>
+    <td align="center"><span class="teamworkIcon delDoc" style="cursor: pointer">d</span></td>
+  </tr>
+  --></div>
+  <div class="__template__" type="DOC_LIST"><!--
+  <div style="padding: 5px;">
 
-
+    <h2>Projects</h2>
+    <table  cellspacing="1" cellpadding="0" width="100%" id="docListTable">
+      <tr>
+        <th style="width:100px;">name</th>
+        <th style="width:30px;" id="addDoc"><span class="teamworkIcon" style="cursor: pointer">+</span></th>
+      </tr>
+    </table>
+  </div>
+  --></div>
+</div>
 <div id="gantEditorTemplates" style="display:none;">
   <div class="__template__" type="GANTBUTTONS"><!--
   <div class="ganttButtonBar noprint">
+    <h1></h1>
     <div class="buttons">
     <button onclick="$('#workSpace').trigger('undo.gantt');" class="button textual" title="undo"><span class="teamworkIcon">&#39;</span></button>
     <button onclick="$('#workSpace').trigger('redo.gantt');" class="button textual" title="redo"><span class="teamworkIcon">&middot;</span></button>
@@ -514,8 +605,8 @@ function editResources(){
     <button onclick="ge.gantt.showCriticalPath=!ge.gantt.showCriticalPath; ge.redraw();" class="button textual" title="Critical Path"><span class="teamworkIcon">&pound;</span></button>
     <span class="ganttButtonSeparator"></span>
     <button onclick="editResources();" class="button textual" title="edit resources"><span class="teamworkIcon">M</span></button>
-      &nbsp; &nbsp; &nbsp; &nbsp;
-      <button onclick="saveGanttOnServer();" class="button first big" title="save">save</button>
+    <span class="ganttButtonSeparator"></span>
+    <button onclick="showDocList();" class="button textual" title="load project"><span class="teamworkIcon">t</span></button>
     </div></div>
   --></div>
 
@@ -679,8 +770,6 @@ function editResources(){
     <td align="center"><span class="teamworkIcon delRes" style="cursor: pointer">d</span></td>
   </tr>
   --></div>
-
-
 </div>
 <script type="text/javascript">
   $.JST.loadDecorator("RESOURCE_ROW", function(resTr, res){
@@ -717,8 +806,6 @@ function editResources(){
         });
       });
     }
-
-
   });
 </script>
 </body>
