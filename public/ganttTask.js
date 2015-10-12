@@ -66,11 +66,23 @@ function Task(id, name, code, level, start, end, duration, collapsed) {
   this.assigs = [];
 }
 
+function cloneHack (obj) {
+  try {
+    return JSON.parse(JSON.stringify(obj));
+  } catch (e) {
+    return obj;
+  }
+}
+
 Task.prototype.clone = function () {
   var ret = {};
   for (var key in this) {
     if (typeof(this[key]) != "function") {
-      ret[key] = this[key];
+      if (key === 'assigs') {
+        ret.assigs = cloneHack(this.assigs);
+      } else {
+        ret[key] = this[key];
+      }
     }
   }
   return ret;

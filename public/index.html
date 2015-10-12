@@ -203,8 +203,6 @@ function saveGanttOnServer() {
   var newGantt = ge.saveProject();
   var ops;
   if (oldGantt) {
-    console.log(oldGantt);
-    console.log(newGantt);
     ops = window.diffop(oldGantt, newGantt);
   } else {
     ops = window.diffop(context.getSnapshot(), newGantt);
