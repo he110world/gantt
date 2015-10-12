@@ -572,8 +572,18 @@ GanttMaster.prototype.saveGantt = function (forTransaction) {
   ret.deletedTaskIds = this.deletedTaskIds;  //this must be consistent with transactions and undo
 
   if (!forTransaction) {
-    ret.resources = this.resources;
-    ret.roles = this.roles;
+    if (this.resources) {
+      ret.resources = [];
+      this.resources.forEach(function(r){
+        ret.resources.push(jQuery.extend(true, {}, r));
+      });
+    }
+    if (this.roles) {
+      ret.roles = [];
+      this.roles.forEach(function(r){
+        ret.roles.push(jQuery.extend(true, {}, r));
+      });
+    }
     ret.canWrite = this.canWrite;
     ret.canWriteOnParent = this.canWriteOnParent;
 //    ret.splitterPosition=this.splitter.perc;

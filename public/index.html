@@ -203,6 +203,8 @@ function saveGanttOnServer() {
   var newGantt = ge.saveProject();
   var ops;
   if (oldGantt) {
+    console.log(oldGantt);
+    console.log(newGantt);
     ops = window.diffop(oldGantt, newGantt);
   } else {
     ops = window.diffop(context.getSnapshot(), newGantt);
@@ -328,15 +330,10 @@ function setRoles() {
 
 function setResource() {
   var res = [];
-  for (var i = 1; i <= 10; i++) {
-    res.push({id:"tmp_" + i,name:"Resource " + i});
-  }
+  // for (var i = 1; i <= 10; i++) {
+  //   res.push({id:"tmp_" + i,name:"Resource " + i});
+  // }
   ge.resources = res;
-}
-
-
-function editResources(){
-
 }
 
 function clearGantt() {
