@@ -80,6 +80,7 @@ var ge;  //this is the hugly but very friendly global var for the gantt editor
 var bcsocket, sjs, doc, context, docname;
 var emptyGantt = {"tasks":[],"resources":[],"roles":[],"canWrite":true};
 var oldGantt;
+var pendingLoad = false;
 
 function addDoc () {
 
@@ -155,9 +156,13 @@ function initShareJS (cb) {
     cb();
   }); 
   doc.on('after op', function(op, islocal){
-    if (!islocal && !ge.dirty) {
-      // if no unsaved changes
-      loadGanttFromServer();
+    if (!islocal) {
+      if (ge.dirty) {
+        pendingLoad = true;
+      } else {
+        // if no unsaved changes
+        loadGanttFromServer();
+      }
     }
   });
 }
@@ -274,6 +279,10 @@ function saveGanttOnServer() {
     console.log('submit op');
     oldGantt = newGantt;
     context.submitOp(ops);
+  }
+  if (pendingLoad) {
+    loadGanttFromServer();
+    pendingLoad = false;
   }
   ge.dirty = false;
 }
