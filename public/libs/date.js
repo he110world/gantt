@@ -554,8 +554,8 @@ Date.prototype.incrementDateByWorkingDays=function (days) {
   var q = Math.abs(days);
   while (q > 0) {
     this.setDate(this.getDate() + (days > 0 ? 1 : -1));
-    if (!this.isHoliday())
-      q--;
+    // if (!this.isHoliday())
+    //   q--;
   }
   return this;
 };
@@ -570,7 +570,8 @@ Date.prototype.distanceInWorkingDays= function (toDate){
   nd.setHours(23, 59, 59, 999);
   var end=nd.getTime();
   while (pos.getTime() <= end) {
-    days = days + (isHoliday(pos) ? 0 : 1);
+//    days = days + (isHoliday(pos) ? 0 : 1);
+	++days;
     pos.setDate(pos.getDate() + 1);
   }
   return days;
