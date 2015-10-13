@@ -81,6 +81,7 @@ var bcsocket, sjs, doc, context, docname;
 var emptyGantt = {"tasks":[],"resources":[],"roles":[],"canWrite":true};
 var oldGantt;
 var pendingLoad = false;
+var inited = false;
 
 function addDoc () {
 
@@ -163,6 +164,20 @@ function initShareJS (cb) {
         // if no unsaved changes
         loadGanttFromServer();
       }
+    }
+  });
+  // connect/reconnect to server
+  doc.on('subscribe', function(){
+    // skip the first event
+    if (!inited) {
+      inited = true;
+      return;
+    }
+    if (ge.dirty) {
+      pendingLoad = true;
+    } else {
+      // if no unsaved changes
+      loadGanttFromServer();
     }
   });
 }
