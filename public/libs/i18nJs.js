@@ -103,6 +103,9 @@
   var workingDaysPerWeek =5;
 
   function isHoliday(date) {
+    return false;
+
+    // no fucking holiday
     var friIsHoly =false;
     var satIsHoly =true;
     var sunIsHoly =true;
