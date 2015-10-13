@@ -22,9 +22,11 @@
 
   sharejs = require('share');
 
-  webserver = connect(serveStatic("" + __dirname + "/public"), serveStatic(sharejs.scriptsDir));
+  webserver = connect();
+  webserver.use(serveStatic("" + __dirname + "/public"));
+  webserver.use(serveStatic(sharejs.scriptsDir));
 
-  backend = livedb.client(livedbMongo('mongodb://localhost:27017/test?auto_reconnect', {
+  backend = livedb.client(livedbMongo('mongodb://localhost:27017/gantt?auto_reconnect', {
     safe: false
   }));
 
