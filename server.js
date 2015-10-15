@@ -26,6 +26,13 @@
   webserver.use(serveStatic("" + __dirname + "/public"));
   webserver.use(serveStatic(sharejs.scriptsDir));
 
+  var compression = require('compression');
+  webserver.use(compression());
+
+  var bodyParser = require('body-parser');
+  webserver.use(bodyParser.urlencoded());
+  webserver.use(bodyParser.json());
+
   backend = livedb.client(livedbMongo('mongodb://localhost:27017/gantt?auto_reconnect', {
     safe: false
   }));
@@ -102,6 +109,47 @@
       });
     } catch (e) {
       res.end('[]');
+    }
+  });
+
+  webserver.use('/accounts', function (req, res, next) {
+    var col = backend.snapshotDb.mongo.collection('gantt_accounts');
+    if (req.method === 'GET') {
+      col.find({}).toArray(function(err, data) {
+        res.end(JSON.stringify(data));
+      });
+    } else if (req.method === 'POST') {
+      if (!Array.isArray(req.body.username)) {
+        if (req.body.username) {
+          req.body._id = req.body.username;
+          col.remove({}, function(err,results){
+            col.insert(req.body, function(err,r){
+              res.end();
+            });
+          });
+        } else {
+          res.end();
+        }
+        return;
+      }
+      // id is username
+      var accounts = [];
+      var keys = Object.keys(req.body);
+      delete keys[keys.indexOf('username')];
+      req.body.username.forEach(function(username, i){
+        var acc = {};
+        acc._id = username;
+        keys.forEach(function(key){
+          acc[key] = req.body[key][i];
+        });
+        accounts.push(acc);
+      });
+      console.log(accounts);
+      col.remove({}, function(err,results){
+        col.insert(accounts, function(err, r){
+          res.end();
+        });
+      });
     }
   });
 
