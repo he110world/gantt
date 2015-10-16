@@ -88,12 +88,12 @@ Task.prototype.clone = function () {
   return ret;
 };
 
-Task.prototype.isAssigned = function (realname) {
+Task.prototype.isAssigned = function () {
   var ret = "";
   for (var i=0;i<this.assigs.length;i++) {
     var ass = this.assigs[i];
     var res = this.master.getResource(ass.resourceId);
-    if (res && res.name===realname) {
+    if (res && res.name===authinfo.realname) {
       return true;
     }
   }
@@ -106,7 +106,13 @@ Task.prototype.getAssigsString = function () {
     var ass = this.assigs[i];
     var res = this.master.getResource(ass.resourceId);
     if (res) {
-      ret = ret + (ret == "" ? "" : ", ") + res.name;
+      if (authinfo.role=='admin') {
+        ret = ret + (ret == "" ? "" : ", ") + res.name;
+      } else if (res.name===authinfo.realname) {
+        ret = ret + '<font color="navy">' + (ret == "" ? "" : ", ") + res.name + "</font>";
+      } else {
+        ret = ret + '<font color="lightgray">' + (ret == "" ? "" : ", ") + res.name + "</font>";
+      }
     }
   }
   return ret;

@@ -537,7 +537,7 @@ GridEditor.prototype.openFullEditor = function (task, taskRow) {
   }
 
 
-  if (!self.master.canWrite || !task.canWrite) {
+  if ((authinfo && authinfo.role!="admin") || !self.master.canWrite || !task.canWrite) {
     taskEditor.find("input,textarea").attr("readOnly", true);
     taskEditor.find("input:checkbox,select").attr("disabled", true);
     taskEditor.find("#saveButton").remove();

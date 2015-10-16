@@ -381,7 +381,7 @@ Ganttalendar.prototype.drawTask = function (task) {
   if (self.showCriticalPath && task.isCritical)
     taskBox.addClass("critical");
 
-  if (this.master.canWrite && task.canWrite) {
+  if (authinfo && authinfo.role=="admin" && this.master.canWrite && task.canWrite) {
 
     //bind all events on taskBox
     taskBox
@@ -419,8 +419,8 @@ Ganttalendar.prototype.drawTask = function (task) {
         var task = self.master.getTask($(this).attr("taskId"));
         task.rowElement.click();
       }).dragExtedSVG($(self.svg.root()), {
-        canResize:  this.master.canWrite && task.canWrite,
-        canDrag:    !task.depends && this.master.canWrite && task.canWrite,
+        canResize:  authinfo && authinfo.role=="admin" && this.master.canWrite && task.canWrite,
+        canDrag:    authinfo && authinfo.role=="admin" && !task.depends && this.master.canWrite && task.canWrite,
         startDrag:  function (e) {
           $(".ganttSVGBox .focused").removeClass("focused");
         },
@@ -724,7 +724,7 @@ Ganttalendar.prototype.drawLink = function (from, to, type) {
     link = drawStartToEnd(from, to, peduncolusSize);
   }
 
-  if (this.master.canWrite && (from.canWrite || to.canWrite)) {
+  if (authinfo && authinfo.role=="admin" && this.master.canWrite && (from.canWrite || to.canWrite)) {
     link.click(function (e) {
       var el = $(this);
       e.stopPropagation();// to avoid body remove focused
