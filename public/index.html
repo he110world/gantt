@@ -693,31 +693,31 @@ function editResources(){
     <div class="buttons">
     <button onclick="showDocList();" class="button textual" title="load project"><span class="teamworkIcon">F</span></button>
     <span class="ganttButtonSeparator"></span>
-    <button onclick="$('#workSpace').trigger('undo.gantt');" class="button textual" title="undo"><span class="teamworkIcon">&#39;</span></button>
-    <button onclick="$('#workSpace').trigger('redo.gantt');" class="button textual" title="redo"><span class="teamworkIcon">&middot;</span></button>
-    <span class="ganttButtonSeparator"></span>
-    <button onclick="$('#workSpace').trigger('appendTask.gantt');" class="button textual" title="append task"><span class="teamworkIcon">P</span></button>
-    <button onclick="$('#workSpace').trigger('addAboveCurrentTask.gantt');" class="button textual" title="insert above"><span class="teamworkIcon">l</span></button>
-    <button onclick="$('#workSpace').trigger('addBelowCurrentTask.gantt');" class="button textual" title="insert below"><span class="teamworkIcon">X</span></button>
-    <span class="ganttButtonSeparator"></span>
-    <button onclick="$('#workSpace').trigger('indentCurrentTask.gantt');" class="button textual" title="indent task"><span class="teamworkIcon">.</span></button>
-    <button onclick="$('#workSpace').trigger('outdentCurrentTask.gantt');" class="button textual" title="unindent task"><span class="teamworkIcon">:</span></button>
-    <span class="ganttButtonSeparator"></span>
-    <button onclick="$('#workSpace').trigger('moveUpCurrentTask.gantt');" class="button textual" title="move up"><span class="teamworkIcon">k</span></button>
-    <button onclick="$('#workSpace').trigger('moveDownCurrentTask.gantt');" class="button textual" title="move down"><span class="teamworkIcon">j</span></button>
-    <span class="ganttButtonSeparator"></span>
+    <button onclick="$('#workSpace').trigger('undo.gantt');" class="button textual" title="undo" style="(#=authinfo.role=="admin"?"":"display:none;"#)"><span class="teamworkIcon">&#39;</span></button>
+    <button onclick="$('#workSpace').trigger('redo.gantt');" class="button textual" title="redo" style="(#=authinfo.role=="admin"?"":"display:none;"#)"><span class="teamworkIcon">&middot;</span></button>
+    <span class="ganttButtonSeparator" style="(#=authinfo.role=="admin"?"":"display:none;"#)"></span>
+    <button onclick="$('#workSpace').trigger('appendTask.gantt');" class="button textual" title="append task" style="(#=authinfo.role=="admin"?"":"display:none;"#)"><span class="teamworkIcon">P</span></button>
+    <button onclick="$('#workSpace').trigger('addAboveCurrentTask.gantt');" class="button textual" title="insert above" style="(#=authinfo.role=="admin"?"":"display:none;"#)"><span class="teamworkIcon">l</span></button>
+    <button onclick="$('#workSpace').trigger('addBelowCurrentTask.gantt');" class="button textual" title="insert below" style="(#=authinfo.role=="admin"?"":"display:none;"#)"><span class="teamworkIcon">X</span></button>
+    <span class="ganttButtonSeparator" style="(#=authinfo.role=="admin"?"":"display:none;"#)"></span>
+    <button onclick="$('#workSpace').trigger('indentCurrentTask.gantt');" class="button textual" title="indent task" style="(#=authinfo.role=="admin"?"":"display:none;"#)"><span class="teamworkIcon">.</span></button>
+    <button onclick="$('#workSpace').trigger('outdentCurrentTask.gantt');" class="button textual" title="unindent task" style="(#=authinfo.role=="admin"?"":"display:none;"#)"><span class="teamworkIcon">:</span></button>
+    <span class="ganttButtonSeparator" style="(#=authinfo.role=="admin"?"":"display:none;"#)"></span>
+    <button onclick="$('#workSpace').trigger('moveUpCurrentTask.gantt');" class="button textual" title="move up" style="(#=authinfo.role=="admin"?"":"display:none;"#)"><span class="teamworkIcon">k</span></button>
+    <button onclick="$('#workSpace').trigger('moveDownCurrentTask.gantt');" class="button textual" title="move down" style="(#=authinfo.role=="admin"?"":"display:none;"#)"><span class="teamworkIcon">j</span></button>
+    <span class="ganttButtonSeparator" style="(#=authinfo.role=="admin"?"":"display:none;"#)"></span>
     <button onclick="$('#workSpace').trigger('zoomMinus.gantt');" class="button textual" title="zoom out"><span class="teamworkIcon">)</span></button>
     <button onclick="$('#workSpace').trigger('zoomPlus.gantt');" class="button textual" title="zoom in"><span class="teamworkIcon">(</span></button>
     <span class="ganttButtonSeparator"></span>
-    <button onclick="$('#workSpace').trigger('deleteCurrentTask.gantt');" class="button textual" title="delete"><span class="teamworkIcon">&cent;</span></button>
-    <span class="ganttButtonSeparator"></span>
+    <button onclick="$('#workSpace').trigger('deleteCurrentTask.gantt');" class="button textual" title="delete" style="(#=authinfo.role=="admin"?"":"display:none;"#)"><span class="teamworkIcon">&cent;</span></button>
+    <span class="ganttButtonSeparator" style="(#=authinfo.role=="admin"?"":"display:none;"#)"></span>
     <button onclick="print();" class="button textual" title="print"><span class="teamworkIcon">p</span></button>
     <span class="ganttButtonSeparator"></span>
     <button onclick="ge.gantt.showCriticalPath=!ge.gantt.showCriticalPath; ge.redraw();" class="button textual" title="Critical Path"><span class="teamworkIcon">&pound;</span></button>
-    <span class="ganttButtonSeparator"></span>
-    <button onclick="editResources();" class="button textual" title="edit resources"><span class="teamworkIcon">M</span></button>
-    <span class="ganttButtonSeparator"></span>
-    <button onclick="showAccountList();" class="button textual" title="edit accounts"><span class="teamworkIcon">g</span></button>
+    <span class="ganttButtonSeparator" style="(#=authinfo.role=="admin"?"":"display:none;"#)"></span>
+    <button onclick="editResources();" class="button textual" title="edit resources" style="(#=authinfo.role=="admin"?"":"display:none;"#)"><span class="teamworkIcon">M</span></button>
+    <span class="ganttButtonSeparator" style="(#=authinfo.role=="root"?"":"display:none;"#)"></span>
+    <button onclick="showAccountList();" class="button textual" title="edit accounts" style="(#=authinfo.role=="root"?"":"display:none;"#)"><span class="teamworkIcon">g</span></button>
     </div></div>
   --></div>
 
