@@ -754,7 +754,7 @@ function editResources(){
     <td class="gdfCell"><input type="text" name="end" value="" class="date"></td>
     <td class="gdfCell"><input type="text" name="duration" value="(#=obj.duration#)" (#=authinfo.role=="admin"?"":"readonly"#)></td>
     <td class="gdfCell"><input type="text" name="depends" value="(#=obj.depends#)" (#=obj.hasExternalDep||authinfo.role!="admin"?"readonly":""#)></td>
-    <td class="gdfCell"><input type="text" name="progress" value="(#=obj.progress#)" (#=obj.isAssigned(authinfo.realname)?"":"readonly"#)></td>
+    <td class="gdfCell"><input type="text" name="progress" value="(#=obj.progress#)" (#=authinfo.role=="admin"||obj.isAssigned(authinfo.realname)?"":"readonly"#)></td>
     <td class="gdfCell taskAssigs">(#=obj.getAssigsString()#)</td>
   </tr>
   --></div>
