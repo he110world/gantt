@@ -244,7 +244,7 @@ function initAuth (cb) {
         cb();
       });
     });
-    var ndo = createBlackPage(300, 300, true).append(loginForm);
+    var ndo = createBlackPage(250, 300, true).append(loginForm);
   }
 }
 
@@ -675,7 +675,7 @@ function editResources(){
   <tr docName="(#=obj.name#)">
     <td>
     <input type="text" value="">
-    <button type="button" id="addNewDoc">Save</button>
+    <button type="button" id="addNewDoc" class="button small">Save</button>
     </td>
     <td align="center"><span class="teamworkIcon delDoc" style="cursor: pointer">d</span></td>
   </tr>
@@ -909,6 +909,12 @@ function editResources(){
         optr.attr("selected", "true");
       resEl.append(optr);
     }
+  });
+
+  $.JST.loadDecorator("NEW_DOC_ROW", function(resTr, res){
+    resTr.find(".delDoc").click(function(){
+      $(this).closest("tr").remove();
+    });
   });
 
   $.JST.loadDecorator("DOC_ROW", function(resTr, res){
