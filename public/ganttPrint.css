@@ -13,7 +13,6 @@ BODY, TBODY {
 .teamworkIcon{
   display:none;
 }
-
 .mainColumn{
   width:98% !important;
 }
@@ -46,8 +45,8 @@ BODY, TBODY {
 }
 
 .gdfTable{
-   width: 0 !important;
- }
+  width: 0 !important;
+}
 
 .splitBox2{
   page-break-before: always !important;

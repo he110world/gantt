@@ -394,6 +394,7 @@ GridEditor.prototype.bindRowInputEvents = function (task, taskRow) {
       case 9: //tab
         break;
       case 13: //enter
+      case 27: //esc 
         theTd.find("input").blur();
         break;
     }

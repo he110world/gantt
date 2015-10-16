@@ -4,6 +4,7 @@ body{
 }
 
 /* -------------------------------------- GRIDIFY -----------------------------------*/
+
 .gdfTable {
   table-layout: fixed;
   border-collapse: separate;
@@ -164,6 +165,8 @@ body{
 .ganttButtonBar .button.textual span.teamworkIcon{
   font-size: 150%
 }
+
+
 
 .ganttButtonSeparator{
   border-left:1px solid gray;
@@ -505,7 +508,7 @@ input[readonly]{
   /*vertical-align: middle;*/
   text-align: right;
   /*margin: 0 5px 0 0;*/
-  padding-top: 5px;
+  padding: 5px;
   float: right;
   position: relative;
   z-index: 50;
@@ -536,6 +539,7 @@ input[readonly]{
 
 /* Large screens */
 
+
 @media only screen and (max-width : 1440px) and (min-width : 1260px) {
 
   .ganttButtonBar .button.textual span.teamworkIcon {
@@ -544,7 +548,7 @@ input[readonly]{
 
   .userLine {
     display: none;
-}
+  }
 
 }
 
@@ -597,6 +601,7 @@ input[readonly]{
   }
 
 }
+
 
 /* Ipad */
 
