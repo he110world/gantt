@@ -711,8 +711,8 @@ function editResources(){
     <span class="ganttButtonSeparator"></span>
     <button onclick="$('#workSpace').trigger('deleteCurrentTask.gantt');" class="button textual" title="delete" style="(#=authinfo.role=="admin"?"":"display:none;"#)"><span class="teamworkIcon">&cent;</span></button>
     <span class="ganttButtonSeparator" style="(#=authinfo.role=="admin"?"":"display:none;"#)"></span>
-    <button onclick="print();" class="button textual" title="print"><span class="teamworkIcon">p</span></button>
-    <span class="ganttButtonSeparator"></span>
+    <button onclick="print();" class="button textual" title="print" style="(#=authinfo.role=="admin"?"":"display:none;"#)"><span class="teamworkIcon">p</span></button>
+    <span class="ganttButtonSeparator" style="(#=authinfo.role=="admin"?"":"display:none;"#)"></span>
     <button onclick="ge.gantt.showCriticalPath=!ge.gantt.showCriticalPath; ge.redraw();" class="button textual" title="Critical Path"><span class="teamworkIcon">&pound;</span></button>
     <span class="ganttButtonSeparator" style="(#=authinfo.role=="admin"?"":"display:none;"#)"></span>
     <button onclick="editResources();" class="button textual" title="edit resources" style="(#=authinfo.role=="admin"?"":"display:none;"#)"><span class="teamworkIcon">M</span></button>
