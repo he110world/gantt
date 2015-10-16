@@ -343,6 +343,12 @@ GridEditor.prototype.bindRowInputEvents = function (task, taskRow) {
         } else if (field == "name" && el.val() == "") { // remove unfilled task
             task.deleteTask();
 
+        } else if (field == "progress") {
+          task.progress = el.val();
+          if (Number(task.progress) < 100) {
+            row.find("[name=finished]").prop('checked', false);
+            delete task.finDate;
+          }
         } else {
           task[field] = el.val();
         }
@@ -451,6 +457,35 @@ GridEditor.prototype.bindRowInputEvents = function (task, taskRow) {
     } else if (top<40){
       row.offsetParent().scrollTop(row.offsetParent().scrollTop()-40+top);
     }
+  });
+
+  // checkbox event
+  taskRow.change(function (e){
+    var checkbox = e.target;
+    if (checkbox.type !== 'checkbox') {
+      return;
+    }
+    var el = $(this);
+    var row = el.closest("tr");
+    var taskId = row.attr("taskId");
+
+    var task = self.master.getTask(taskId);
+
+    //update task from editor
+    self.master.beginTransaction();
+    if (checkbox.name === 'finished') {
+      if (checkbox.checked) {
+        task.finDate = new Date().getTime();
+      } else {
+        delete task.finDate;
+      }
+    } else {
+      task[field] = e.target.checked;
+    }
+    self.master.endTransaction();
+
+    self.master.dirty = true;
+    console.log('check');
   });
 
   taskRow.on('input propertychange paste', function(){

@@ -106,10 +106,10 @@ Task.prototype.getAssigsString = function () {
     var ass = this.assigs[i];
     var res = this.master.getResource(ass.resourceId);
     if (res) {
-      if (authinfo.role=='admin') {
+      if (res.name===authinfo.realname) {
+        ret = ret + '<font color="mediumblue">' + (ret == "" ? "" : ", ") + res.name + "</font>";
+      } else if (authinfo.role=='admin') {
         ret = ret + (ret == "" ? "" : ", ") + res.name;
-      } else if (res.name===authinfo.realname) {
-        ret = ret + '<font color="navy">' + (ret == "" ? "" : ", ") + res.name + "</font>";
       } else {
         ret = ret + '<font color="lightgray">' + (ret == "" ? "" : ", ") + res.name + "</font>";
       }

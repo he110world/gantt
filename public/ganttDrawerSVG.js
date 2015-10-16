@@ -309,7 +309,7 @@ Ganttalendar.prototype.create = function (zoom, originalStartmillis, originalEnd
 
         //create backgound
         var extDep = svg.pattern(defs, "extDep", 0, 0, 10, 10, 0, 0, 10, 10, {patternUnits:'userSpaceOnUse'});
-        var img=svg.image(extDep, 0, 0, 10, 10, self.master.resourceUrl + "hasExternalDeps.png",{opacity:.3});
+        var img=svg.image(extDep, 0, 0, 10, 10, self.master.resourceUrl + "hasExternalDeps.png",{opacity:.5});
 
         self.svg = svg;
         $(svg).addClass("ganttSVGBox");
@@ -548,7 +548,7 @@ Ganttalendar.prototype.drawTask = function (task) {
     //external box
     var layout = svg.rect(taskSvg, 0, 0, "100%", "100%", {class:"taskLayout", rx:"2", ry:"2"});
 
-    svg.rect(taskSvg, 0, 0, "100%", "100%", {fill:"rgba(255,255,255,.3)"});
+    svg.rect(taskSvg, 0, 0, "100%", "100%", {fill:"rgba(255,255,255,.5)"});
 
     //external dep
     if (task.hasExternalDep)
