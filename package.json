@@ -28,6 +28,7 @@
     "connect-auth": "^0.6.1",
     "diffop": "^1.1.0",
     "jsondiff-share-ops": "0.0.1",
+    "jsonwebtoken": "^5.4.0",
     "livedb": "^0.5.13",
     "livedb-mongo": "^0.4.1",
     "optimist": "^0.6.1",

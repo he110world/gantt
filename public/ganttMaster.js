@@ -75,8 +75,8 @@ GanttMaster.prototype.init = function (place) {
   self.splitter.firstBoxMinWidth=30;
 
   //prepend buttons
-  place.before($.JST.createFromTemplate({}, "GANTBUTTONS"));
-
+  var buttons = $.JST.createFromTemplate({}, "GANTBUTTONS");
+  place.before(buttons);
 
   //bindings
   place.bind("refreshTasks.gantt",function () {
@@ -205,6 +205,8 @@ GanttMaster.prototype.init = function (place) {
       }
     }
   });
+
+  return buttons;
 };
 
 GanttMaster.messages = {

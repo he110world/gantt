@@ -16,6 +16,7 @@
 
   <script src="libs/jquery.livequery.min.js"></script>
   <script src="libs/jquery.timers.js"></script>
+  <script src="libs/js.cookie.js"></script>
   <script src="libs/platform.js"></script>
   <script src="libs/date.js"></script>
   <script src="libs/i18nJs.js"></script>
@@ -82,6 +83,7 @@ var emptyGantt = {"tasks":[],"resources":[],"roles":[],"canWrite":true};
 var oldGantt;
 var pendingLoad = false;
 var inited = false;
+var authinfo;
 
 function showAccountList () {
   var accountList = $.JST.createFromTemplate({}, "ACCOUNT_LIST");
@@ -206,10 +208,48 @@ function showDocList (hideClose) {
 //  console.log(Object.keys(sjs.collections['gantt']));
 }
 
+function logout () {
+    // delete cookie
+    authinfo = null;
+    Cookies.remove('ganttauth');
+    location.reload();
+}
+
+function postAuth (post, cb) {
+  $.post('auth', post, function(result){
+    authinfo = JSON.parse(result);
+    Cookies.set('ganttauth', authinfo, {expires:1});
+    cb();
+  }).error(function(){
+    // delete cookie
+    authinfo = null;
+    Cookies.remove('ganttauth');
+    initAuth(cb);
+  });
+}
+
+function initAuth (cb) {
+  // try load from cookie
+  authinfo = Cookies.getJSON('ganttauth');
+  if (authinfo) {
+    var post = [{name:'username', value:authinfo._id}, {name:'password', value:authinfo.password}];
+    postAuth(post, cb);
+  } else {
+    // show login form
+    var loginForm = $.JST.createFromTemplate({}, "LOGIN_FORM");
+    loginForm.find("#loginButton").click(function(){
+      var post = $("#loginForm").serializeArray();
+      postAuth(post, function(){        
+        closeBlackPopup();
+        cb();
+      });
+    });
+    var ndo = createBlackPage(300, 300, true).append(loginForm);
+  }
+}
+
 // init ShareJS
 function initShareJS (cb) {
-  $('#docListTemplates').loadTemplates();
-
   docname = window.location.search;
   if (docname) {
     docname = docname.split('=')[1];  // ?doc=docname
@@ -266,7 +306,9 @@ function initGantt () {
   ge = new GanttMaster(onRedraw);
   var workSpace = $("#workSpace");
   workSpace.css({width:$(window).width() - 20,height:$(window).height() - 100});
-  ge.init(workSpace);
+  var buttons = ge.init(workSpace);
+  console.log(authinfo);
+  buttons.append($.JST.createFromTemplate(authinfo, "USER_PROFILE"));
 
   //inject some buttons (for this demo only)
   // $(".ganttButtonBar div").append("<button onclick='clearGantt();' class='button'>clear</button>")
@@ -313,7 +355,14 @@ $(function() {
 });
 */
 $( document ).ready(function() {
-  initShareJS(initGantt);
+  $('#docListTemplates').loadTemplates();
+  initAuth(function(err){
+    if (err) {
+
+    } else {
+      initShareJS(initGantt);
+    }
+  });
 });
 
 //-------------------------------------------  ShareJS ------------------------------------------------------
@@ -553,6 +602,24 @@ function editResources(){
 
 </script>
 <div id="docListTemplates" style="display:none;">
+  <div class="__template__" type="USER_PROFILE"><!--
+  <div class="userProfile noprint">
+    <span class="userLine"><h2>(#=obj.realname#)</h2></span>
+    <button onclick="logout();" class="button textual" title="logout"><span class="teamworkIcon">x</span></button>
+  </div>
+  --></div>
+  <div class="__template__" type="LOGIN_FORM"><!--
+  <div style="padding: 20px;">
+    <h2>Login</h2>
+    <div align="center">
+      <form id="loginForm">
+        <p><input type="text" name="username" value="" placeholder="Username" class="formElements" style="width:100%;"></p>
+        <p><input type="password" name="password" value="" placeholder="Password" class="formElements" style="width:100%;"></p>
+      </form>
+    </div>
+    <div align="right" style="padding-top: 80px"><button id="loginButton" class="button big" style="margin:0px;">login</button></div>
+  </div>
+  --></div>
   <div class="__template__" type="ACCOUNT_ROW"><!--
   <tr accountId="(#=obj._id#)">
     <td align="center">
@@ -679,7 +746,7 @@ function editResources(){
     <th class="gdfCell edit" align="right" style="cursor:pointer;"><span class="taskRowIndex">(#=obj.getRow()+1#)</span> <span class="teamworkIcon" style="font-size:12px;" >e</span></th>
     <td class="gdfCell noClip" align="center"><div class="taskStatus cvcColorSquare" status="(#=obj.status#)"></div></td>
     <td class="gdfCell"><input type="text" name="code" value="(#=obj.code?obj.code:''#)"></td>
-    <td class="gdfCell indentCell" style="padding-left:(#=obj.level*10#)px;">
+    <td class="gdfCell indentCell readonly" style="padding-left:(#=obj.level*10#)px;">
       <div class="(#=obj.isParent()?'exp-controller expcoll exp':'exp-controller'#)" align="center"></div>
       <input type="text" name="name" value="(#=obj.name#)">
     </td>

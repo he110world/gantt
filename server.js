@@ -16,6 +16,8 @@
 
   livedbMongo = require('livedb-mongo');
 
+  var auth = require('./auth');
+
   try {
     require('heapdump');
   } catch (_error) {}
@@ -112,18 +114,19 @@
     }
   });
 
+  var accountCol = backend.snapshotDb.mongo.collection('gantt_accounts');
+  webserver.use('/auth', auth.auth(accountCol));
   webserver.use('/accounts', function (req, res, next) {
-    var col = backend.snapshotDb.mongo.collection('gantt_accounts');
     if (req.method === 'GET') {
-      col.find({}).toArray(function(err, data) {
+      accountCol.find({}).toArray(function(err, data) {
         res.end(JSON.stringify(data));
       });
     } else if (req.method === 'POST') {
       if (!Array.isArray(req.body.username)) {
         if (req.body.username) {
           req.body._id = req.body.username;
-          col.remove({}, function(err,results){
-            col.insert(req.body, function(err,r){
+          accountCol.remove({}, function(err,results){
+            accountCol.insert(req.body, function(err,r){
               res.end();
             });
           });
@@ -145,8 +148,8 @@
         accounts.push(acc);
       });
       console.log(accounts);
-      col.remove({}, function(err,results){
-        col.insert(accounts, function(err, r){
+      accountCol.remove({}, function(err,results){
+        accountCol.insert(accounts, function(err, r){
           res.end();
         });
       });
