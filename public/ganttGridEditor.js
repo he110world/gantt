@@ -227,11 +227,16 @@ GridEditor.prototype.bindRowInputEvents = function (task, taskRow) {
     var el = $(this);
 
     //start is readonly in case of deps
-    if (task.depends && el.attr("name") == "start") {
-      el.attr("readonly", "true");
+    if (authinfo && authinfo.role=="admin") {
+      if (task.depends && el.attr("name") == "start") {
+        el.attr("readonly", "true");
+      } else {
+        el.removeAttr("readonly");
+      }
     } else {
-      el.removeAttr("readonly");
+      el.attr("readonly", "true");
     }
+
 
     el.click(function () {
       var inp = $(this);
@@ -481,13 +486,23 @@ GridEditor.prototype.openFullEditor = function (task, taskRow) {
   var startDate = taskEditor.find("#start");
   startDate.val(new Date(task.start).format());
   //start is readonly in case of deps
-  if (task.depends) {
-    startDate.attr("readonly", "true");
+  if (authinfo && authinfo.role=="admin") {
+    if (task.depends) {
+      startDate.attr("readonly", "true");
+    } else {
+      startDate.removeAttr("readonly");
+    }
   } else {
-    startDate.removeAttr("readonly");
+      startDate.attr("readonly", "true");
   }
 
-  taskEditor.find("#end").val(new Date(task.end).format());
+  var endDate = taskEditor.find("#end");
+  endDate.val(new Date(task.end).format());
+  if (authinfo && authinfo.role=="admin") {
+    endDate.removeAttr("readonly");
+  } else {    
+    endDate.attr("readonly", "true");
+  }
 
   //taskEditor.find("[name=depends]").val(task.depends);
 

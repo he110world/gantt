@@ -88,6 +88,18 @@ Task.prototype.clone = function () {
   return ret;
 };
 
+Task.prototype.isAssigned = function (realname) {
+  var ret = "";
+  for (var i=0;i<this.assigs.length;i++) {
+    var ass = this.assigs[i];
+    var res = this.master.getResource(ass.resourceId);
+    if (res && res.name===realname) {
+      return true;
+    }
+  }
+  return false;
+};
+
 Task.prototype.getAssigsString = function () {
   var ret = "";
   for (var i=0;i<this.assigs.length;i++) {
