@@ -295,6 +295,11 @@ function initShareJS (cb) {
       loadGanttFromServer();
     }
   });
+  // doc is deleted
+  doc.on('del', function(){
+    // redirect to home page
+    window.location.href = 'http://' + window.location.host;
+  });
 }
 
 function onRedraw () {
@@ -601,6 +606,15 @@ function editResources(){
 
 </script>
 <div id="docListTemplates" style="display:none;">
+  <div class="__template__" type="CONFIRM_DLG"><!--
+  <div style="padding: 20px; position:fixed;">
+    <h2>(#=obj.title#)</h2>
+    <div align="right" style="padding-left: 150px; padding-top: 80px">
+      <button id="yesButton" class="button big" style="margin:0px;background-color:red;">Yes</button>
+      <button id="noButton" class="button big" style="margin:0px;">No</button>
+    </div>
+  </div>
+  --></div>
   <div class="__template__" type="USER_PROFILE"><!--
   <div class="userProfile noprint">
     <span class="userLine"><h2>(#=obj.realname#)</h2></span>
@@ -669,7 +683,7 @@ function editResources(){
   <div class="__template__" type="DOC_ROW"><!--
   <tr docName="(#=obj.name#)">
     <td><a href="?doc=(#=obj.name#)">(#=obj.name#)</td>
-    <td align="center"><span class="teamworkIcon delDoc" style="cursor: pointer">d</span></td>
+    <td align="center"><span class="teamworkIcon delDoc" style="cursor: pointer">(#=authinfo.role=="root"?"d":""#)</span></td>
   </tr>
   --></div>
   <div class="__template__" type="DOC_LIST"><!--
@@ -677,7 +691,7 @@ function editResources(){
 
     <h2>Projects</h2>
     <table  cellspacing="1" cellpadding="0" width="100%" id="docListTable">
-      <tr>
+      <tr style=(#=authinfo.role=="admin"||authinfo.role=="root"?"":"display:none;"#)>
         <th style="width:100px;">name</th>
         <th style="width:30px;" id="addDoc"><span class="teamworkIcon" style="cursor: pointer">+</span></th>
       </tr>
@@ -881,6 +895,7 @@ function editResources(){
   </tr>
   --></div>
 </div>
+
 <script type="text/javascript">
   $.JST.loadDecorator("RESOURCE_ROW", function(resTr, res){
     resTr.find(".delRes").click(function(){$(this).closest("tr").remove()});
@@ -898,14 +913,25 @@ function editResources(){
 
   $.JST.loadDecorator("DOC_ROW", function(resTr, res){
     resTr.find(".delDoc").click(function(){
-   //   $(this).closest("tr").remove()
-      console.log('del doc');
+      var docName = resTr.attr('docName');
+      var $confirm = $.JST.createFromTemplate({title:'Delete "' + docName + '"?'}, 'CONFIRM_DLG');
+      $confirm.find('#yesButton').click(function(){
+        $.post('del', {name:docName}, function(){
+          if (!docname) {
+            showDocList();
+          }
+        });
+      });
+      $confirm.find('#noButton').click(function(){
+        closeBlackPopup();
+        showDocList(!docname);
+      });
+      createBlackPage(300,200,true).append($confirm);
     });
   });
 
   $.JST.loadDecorator("ACCOUNT_ROW", function(resTr, res){
     resTr.find(".delAccount").click(function(){
-      console.log(resTr);
       $(this).closest("tr").remove();
     });
   });

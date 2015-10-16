@@ -99,13 +99,30 @@
   }));
 
   webserver.use('/doc', share.rest());
+
+  webserver.use('/del', function(req, res, next){
+    if (req.method === 'POST') {
+      try {
+        console.log('delete',req.body.name);
+        backend.submit('gantt', req.body.name, {del:true}, function(err){
+          res.end();
+        });
+      } catch (e) {
+        res.statusCode = 400;
+        res.end();
+      }
+    }
+  });
+
   webserver.use('/docs', function (req, res, next) {
     try {
       var col = backend.snapshotDb.mongo.collection('gantt');
-      col.find({},{_id:1}).toArray(function(err, data){
+      col.find({},{_id:1,_data:1}).toArray(function(err, data){
         var docs = [];
         data.forEach(function(doc){
-          docs.push(doc._id);
+          if (doc._data !== null) {
+            docs.push(doc._id);
+          }
         });
         res.end(JSON.stringify(docs.sort()));
       });
