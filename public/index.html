@@ -237,12 +237,13 @@ function initAuth (cb) {
   } else {
     // show login form
     var loginForm = $.JST.createFromTemplate({}, "LOGIN_FORM");
-    loginForm.find("#loginButton").click(function(){
+    loginForm.find("#loginForm").submit(function(){
       var post = $("#loginForm").serializeArray();
       postAuth(post, function(){        
         closeBlackPopup();
         cb();
       });
+      return false;
     });
     var ndo = createBlackPage(250, 300, true).append(loginForm);
   }
@@ -628,9 +629,11 @@ function editResources(){
       <form id="loginForm">
         <p><input type="text" name="username" value="" placeholder="Username" class="formElements" style="width:100%;"></p>
         <p><input type="password" name="password" value="" placeholder="Password" class="formElements" style="width:100%;"></p>
+        <div align="right" style="padding-top: 80px">
+          <input type="submit" id="loginButton" value="login" class="button big" style="margin:0px;">
+        </div>
       </form>
     </div>
-    <div align="right" style="padding-top: 80px"><button id="loginButton" class="button big" style="margin:0px;">login</button></div>
   </div>
   --></div>
   <div class="__template__" type="ACCOUNT_ROW"><!--
