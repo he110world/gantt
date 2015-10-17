@@ -326,9 +326,27 @@ input[readonly]{
 
 }
 
+
+.taskStatus[status=STATUS_OPEN]{
+ background-color: #279221;
+}
+.taskStatus[status=STATUS_OPEN_DELAY]{
+ background-color: #ca111f;
+}
+.taskStatus[status=STATUS_CLOSED]{
+ background-color: #1b62a5;
+}
+.taskStatus[status=STATUS_CLOSED_DELAY]{
+ background-color: #fd690f;
+}
+.taskStatus[status=STATUS_UNKNOWN]{
+ background-color: #808080;
+}
+/**/
 .taskStatus[status=STATUS_ACTIVE]{
  background-color: #3BBF67;
 }
+
 .taskStatus[status=STATUS_DONE]{
  background-color: #0099FF;
 }
@@ -418,6 +436,35 @@ input[readonly]{
   stroke-dasharray:2,2;
 }
 
+
+.taskStatusSVG[status=STATUS_OPEN]{
+  fill: #279221;
+}
+.taskStatusSVG[status=STATUS_OPEN_DELAY]{
+  fill: #ca111f;
+}
+.taskStatusSVG[status=STATUS_CLOSED]{
+  fill: #1b62a5;
+}
+.taskStatusSVG[status=STATUS_CLOSED_DELAY]{
+  fill: #fd990f;
+}
+.taskStatusSVG[status=STATUS_UNKNOWN]{
+  fill: #808080;
+}
+
+.taskStatusSVG[status=STATUS_UNKNOWN] .taskLayout{
+  stroke: #ccc;
+  stroke-width:1;
+}
+
+.taskStatusSVG[status=STATUS_OPEN] .textPerc,
+.taskStatusSVG[status=STATUS_OPEN_DELAY] .textPerc,
+.taskStatusSVG[status=STATUS_CLOSED] .textPerc,
+.taskStatusSVG[status=STATUS_CLOSED_DELAY] .textPerc{
+  fill: #fff;
+}
+/**/
 .taskStatusSVG[status=STATUS_ACTIVE]{
   fill: #3BBF67;
 }

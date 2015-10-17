@@ -542,7 +542,7 @@ Ganttalendar.prototype.drawTask = function (task) {
 
   function _createTaskSVG(task, dimensions) {
     var svg = self.svg;
-    var taskSvg = svg.svg(self.tasksGroup, dimensions.x, dimensions.y, dimensions.width, dimensions.height, {class:"taskBox taskBoxSVG taskStatusSVG", status:task.status, taskid:task.id });
+    var taskSvg = svg.svg(self.tasksGroup, dimensions.x, dimensions.y, dimensions.width, dimensions.height, {class:"taskBox taskBoxSVG taskStatusSVG", status:computeStatus(task), taskid:task.id });
 
     //svg.title(taskSvg, task.name);
     //external box
@@ -558,7 +558,7 @@ Ganttalendar.prototype.drawTask = function (task) {
     if (task.progress > 0) {
       var progress = svg.rect(taskSvg, 0, 0, (task.progress > 100 ? 100 : task.progress) + "%", "100%", {rx:"2", ry:"2"});
       if (dimensions.width > 50) {
-        var textStyle = {fill:"#888", "font-size":"10px",class:"textPerc teamworkIcons",transform:"translate(5)"};
+        var textStyle = {fill:"#888", "font-size":"10px",class:"textPerc teamworkIcons",transform:"translate(0)"};
         if (task.progress > 100)
           textStyle["font-weight"]="bold";
         if (task.progress > 90)
