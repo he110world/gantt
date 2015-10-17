@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<head>
+	<!-- D3.js -->
+	<script src="libs/d3.min.js"></script>
+	<!-- jQuery -->
+	<script src="libs/jquery.min.js"></script>
+	<!-- Plotly.js -->
+	<script src="libs/plotly-basic.js"></script>
+
+</head>
+<body>
+	<!-- Plotly chart will be drawn inside this DIV -->
+	<div id="myDiv"></div>
+	<script>
+		/* JAVASCRIPT CODE GOES HERE */
+		var trace1 = {
+			x: ['giraffes', 'orangutans', 'monkeys'],
+			y: [20, 14, 23],
+			name: 'SF Zoo',
+			type: 'bar'
+		};
+
+		var trace2 = {
+			x: ['giraffes', 'orangutans', 'monkeys'],
+			y: [12, 18, 29],
+			name: 'LA Zoo',
+			type: 'bar'
+		};
+
+		var data = [trace1, trace2];
+
+		var layout = {barmode: 'stack'};
+
+		Plotly.newPlot('myDiv', data, layout);
+	</script>
+</body>
+</html>
