@@ -164,6 +164,15 @@ function showSummary () {
     } 
   });
 
+  // all assigned?
+  if (closedOk.y[0]==0 && closedDelay.y[0]==0 && openOk.y[0]==0 && openDelay.y[0]==0) {
+    resNames.shift();
+    closedOk.y.shift();
+    closedDelay.y.shift();
+    openOk.y.shift();
+    openDelay.y.shift();
+  }
+
   var data = [closedOk, closedDelay, openOk, openDelay];
   var layout = {title: 'Project Summary', barmode: 'stack'};
 
