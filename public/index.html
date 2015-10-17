@@ -167,7 +167,13 @@ function showSummary () {
   var data = [closedOk, closedDelay, openOk, openDelay];
   var layout = {title: 'Project Summary', barmode: 'stack'};
 
-  var ndo = createBlackPage(600, 500).append(summary);
+  var width = resNames.length * 200;
+  if (width < 600) 
+    width = 600;
+  else if (width > 1200)
+    width = 1200;
+
+  var ndo = createBlackPage(width, 500).append(summary);
   Plotly.newPlot('summaryPage', data, layout);
 }
 
