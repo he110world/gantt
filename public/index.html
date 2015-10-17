@@ -696,6 +696,26 @@ function editResources(){
   });
 }
 
+function computeColor (task) {
+  if (authinfo.role === 'admin' || task.isAssigned()) {
+    if (task.finDate) { // closed
+      if (task.finDate <= task.end) {  // ok
+        return "background-color:lightblue;";
+      } else {  // delay
+        return "background-color:#ffe4b2;";
+      }
+    } else {  // open
+      if (task.end > new Date().getTime()) { // ok
+        return "background-color:#ccffcc;";
+      } else {  // delay
+        return "background-color:#ff9999;";
+      }
+    }
+  } else {
+    return "";
+  }
+}
+
 
 </script>
 <div id="docListTemplates" style="display:none;">
@@ -857,20 +877,20 @@ function editResources(){
   --></div>
 
   <div class="__template__" type="TASKROW"><!--
-  <tr taskId="(#=obj.id#)" class="taskEditRow" level="(#=level#)">
+  <tr taskId="(#=obj.id#)" class="taskEditRow" level="(#=level#)" style=(#=tmpColor=computeColor(obj)#)>
     <th class="gdfCell edit" align="right" style="cursor:pointer;"><span class="taskRowIndex">(#=obj.getRow()+1#)</span> <span class="teamworkIcon" style="font-size:12px;" >e</span></th>
     <td class="gdfCell noClip" align="center"><div class="taskStatus cvcColorSquare" status="(#=obj.status#)"></div></td>
-    <td class="gdfCell"><input type="text" name="code" value="(#=obj.code?obj.code:''#)" (#=authinfo.role=="admin"?"":"readonly"#) style=(#=obj.isAssigned(authinfo.realname)?"color:mediumblue;":""#)></td>
+    <td class="gdfCell"><input type="text" name="code" value="(#=obj.code?obj.code:''#)" (#=authinfo.role=="admin"?"":"readonly"#) style=(#=tmpColor#)></td>
     <td class="gdfCell indentCell readonly" style="padding-left:(#=obj.level*10#)px;">
       <div class="(#=obj.isParent()?'exp-controller expcoll exp':'exp-controller'#)" align="center"></div>
-      <input type="text" name="name" value="(#=obj.name#)" (#=authinfo.role=="admin"?"":"readonly"#) style=(#=obj.isAssigned(authinfo.realname)?"color:mediumblue;":""#)>
+      <input type="text" name="name" value="(#=obj.name#)" (#=authinfo.role=="admin"?"":"readonly"#) style=(#=tmpColor#)>
     </td>
 
-    <td class="gdfCell"><input type="text" name="start"  value="" class="date" style=(#=obj.isAssigned(authinfo.realname)?"color:mediumblue;":""#)></td>
-    <td class="gdfCell"><input type="text" name="end" value="" class="date" style=(#=obj.isAssigned(authinfo.realname)?"color:mediumblue;":""#)></td>
-    <td class="gdfCell"><input type="text" name="duration" value="(#=obj.duration#)" (#=authinfo.role=="admin"?"":"readonly"#) style=(#=obj.isAssigned(authinfo.realname)?"color:mediumblue;":""#)></td>
-    <td class="gdfCell"><input type="text" name="depends" value="(#=obj.depends#)" (#=obj.hasExternalDep||authinfo.role!="admin"?"readonly":""#) style=(#=obj.isAssigned(authinfo.realname)?"color:mediumblue;":""#)></td>
-    <td class="gdfCell"><input type="text" name="progress" value="(#=obj.progress#)" (#=authinfo.role=="admin"||obj.isAssigned()?"":"readonly"#)></td>
+    <td class="gdfCell"><input type="text" name="start"  value="" class="date" style=(#=tmpColor#)></td>
+    <td class="gdfCell"><input type="text" name="end" value="" class="date" style=(#=tmpColor#)></td>
+    <td class="gdfCell"><input type="text" name="duration" value="(#=obj.duration#)" (#=authinfo.role=="admin"?"":"readonly"#) style=(#=tmpColor#)></td>
+    <td class="gdfCell"><input type="text" name="depends" value="(#=obj.depends#)" (#=obj.hasExternalDep||authinfo.role!="admin"?"readonly":""#) style=(#=tmpColor#)></td>
+    <td class="gdfCell"><input type="text" name="progress" value="(#=obj.progress#)" (#=authinfo.role=="admin"||obj.isAssigned()?"":"readonly"#) style=(#=tmpColor#)></td>
     <td class="gdfCell"><input type="checkbox" name="finished" (#=obj.finDate?"checked":""#) (#=authinfo.role=="admin"?"":"disabled"#)></td>
     <td class="gdfCell taskAssigs">(#=obj.getAssigsString()#)</td>
   </tr>

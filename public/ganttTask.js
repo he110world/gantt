@@ -107,7 +107,7 @@ Task.prototype.getAssigsString = function () {
     var res = this.master.getResource(ass.resourceId);
     if (res) {
       if (res.name===authinfo.realname) {
-        ret = ret + '<font color="mediumblue">' + (ret == "" ? "" : ", ") + res.name + "</font>";
+        ret = ret + '<font color="blue">' + (ret == "" ? "" : ", ") + res.name + "</font>";
       } else if (authinfo.role=='admin') {
         ret = ret + (ret == "" ? "" : ", ") + res.name;
       } else {

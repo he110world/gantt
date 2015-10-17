@@ -441,8 +441,24 @@ GridEditor.prototype.bindRowInputEvents = function (task, taskRow) {
   taskRow.click(function () {
     var row = $(this);
     //var isSel = row.hasClass("rowSelected");
-    row.closest("table").find(".rowSelected").removeClass("rowSelected");
+    var oldrow = row.closest("table").find(".rowSelected");
+
+    // restore old row's color
+    oldrow.removeClass("rowSelected");
+    var oldtask = self.master.getTask(oldrow.attr("taskId"));
+    if (oldtask) {
+      var oldcolor = computeColor(oldtask);
+      oldrow.find("input").each(function(i, e){
+        $(e).attr('style', oldcolor);
+      });
+      oldrow.attr('style', oldcolor);
+    }
+
+    // clear current row's color
     row.addClass("rowSelected");
+    row.find("input").each(function(i, e){
+      $(e).attr('style', '');
+    });
 
     //set current task
     self.master.currentTask = self.master.getTask(row.attr("taskId"));
