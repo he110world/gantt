@@ -22,6 +22,8 @@
   <script src="libs/i18nJs.js"></script>
   <script src="libs/dateField/jquery.dateField.js"></script>
   <script src="libs/JST/jquery.JST.js"></script>
+  <script src="libs/d3.min.js"></script>
+  <script src="libs/plotly-basic.js"></script>
 
   <!-- ShareJS -->
   <script src="channel/bcsocket.js"></script>
@@ -84,6 +86,90 @@ var oldGantt;
 var pendingLoad = false;
 var inited = false;
 var authinfo;
+
+function showSummary () {
+  var summary = $.JST.createFromTemplate({}, 'SUMMARY_PAGE');
+
+  // get resources
+  var resNames = ['Unassigned'], resIds = [0];
+  var closedOk = {
+    x: resNames,
+    y: [0],  // task counts
+    name: 'Closed',
+    type: 'bar'
+  };
+
+  var closedDelay = {
+    x: resNames,
+    y: [0],
+    name: 'Closed (Delay)',
+    type: 'bar'
+  };
+
+  var openOk = {    
+    x: resNames,
+    y: [0],
+    name: 'Open',
+    type: 'bar'
+  };
+
+  var openDelay = {    
+    x: resNames,
+    y: [0],
+    name: 'Open (Delay)',
+    type: 'bar'
+  };
+
+  ge.resources.forEach(function(res){
+    resNames.push(res.name);
+    resIds.push(res.id);
+
+    closedOk.y.push(0);
+    closedDelay.y.push(0);
+    openOk.y.push(0);
+    openDelay.y.push(0);
+  });
+
+  // get tasks
+  var now = new Date().getTime();
+  var choose = function (task) {
+     if (task.finDate) { // closed
+      if (task.finDate <= task.end) {  // ok
+        return closedOk;
+      } else {  // delay
+        return closedDelay;
+      }
+    } else {  // open
+      if (task.end > now) { // ok
+        return openOk;
+      } else {  // delay
+        return openDelay;
+      }
+    }
+  };
+
+  ge.tasks.forEach(function(task){
+    var choosed = choose(task);
+
+    if (task.assigs.length > 0) {
+      task.assigs.forEach(function(ass){
+        var idx = resIds.indexOf(ass.resourceId);
+        if (idx === -1) {
+          idx = 0;
+        }
+        ++choosed.y[idx];
+      });
+    } else {
+      ++choosed.y[0];
+    } 
+  });
+
+  var data = [closedOk, closedDelay, openOk, openDelay];
+  var layout = {barmode: 'stack'};
+
+  var ndo = createBlackPage(600, 500).append(summary);
+  Plotly.newPlot('summaryPage', data, layout);
+}
 
 function showAccountList () {
   var accountList = $.JST.createFromTemplate({}, "ACCOUNT_LIST");
@@ -607,6 +693,10 @@ function editResources(){
 
 </script>
 <div id="docListTemplates" style="display:none;">
+  <div class="__template__" type="SUMMARY_PAGE"><!--
+  <div id="summaryPage">
+  </div>
+  --></div>
   <div class="__template__" type="CONFIRM_DLG"><!--
   <div style="padding: 20px; position:fixed;">
     <h2>(#=obj.title#)</h2>
@@ -734,6 +824,8 @@ function editResources(){
     <button onclick="editResources();" class="button textual" title="edit resources" style="(#=authinfo.role=="admin"?"":"display:none;"#)"><span class="teamworkIcon">M</span></button>
     <span class="ganttButtonSeparator" style="(#=authinfo.role=="root"?"":"display:none;"#)"></span>
     <button onclick="showAccountList();" class="button textual" title="edit accounts" style="(#=authinfo.role=="root"?"":"display:none;"#)"><span class="teamworkIcon">g</span></button>
+    <span class="ganttButtonSeparator"></span>
+    <button onclick="showSummary();" class="button textual" title="summary"><span class="teamworkIcon">/</span></button>
     </div></div>
   --></div>
 
