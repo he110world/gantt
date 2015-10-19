@@ -121,7 +121,7 @@
         var docs = [];
         data.forEach(function(doc){
           if (doc._data !== null) {
-            docs.push(doc._id);
+            docs.push(decodeURI(doc._id));
           }
         });
         res.end(JSON.stringify(docs.sort()));

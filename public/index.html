@@ -420,7 +420,7 @@ function initGantt () {
   // $(".ganttButtonBar div").append("<button onclick='clearGantt();' class='button'>clear</button>")
   //         // .append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
   //         .append("<button onclick='getFile();' class='button'>export</button>");
-  $(".ganttButtonBar h1").html(docname);//"<a href='http://twproject.com' title='Twproject the friendly project and work management tool' target='_blank'><img width='80%' src='res/twBanner.jpg'></a>");
+  $(".ganttButtonBar h1").html(decodeURI(docname));//"<a href='http://twproject.com' title='Twproject the friendly project and work management tool' target='_blank'><img width='80%' src='res/twBanner.jpg'></a>");
   $(".ganttButtonBar div").addClass('buttons');
   //overwrite with localized ones
   loadI18n();
@@ -755,7 +755,7 @@ function computeColor (task) {
   <div class="__template__" type="CONFIRM_DLG"><!--
   <div style="padding: 20px; position:fixed;">
     <h2>(#=obj.title#)</h2>
-    <div align="right" style="padding-left: 150px; padding-top: 80px">
+    <div align="right" style="padding-left: 250px; padding-top: 80px">
       <button id="yesButton" class="button big" style="margin:0px;background-color:red;">Yes</button>
       <button id="noButton" class="button big" style="margin:0px;">No</button>
     </div>
@@ -1083,7 +1083,7 @@ function computeColor (task) {
         closeBlackPopup();
         showDocList(!docname);
       });
-      createBlackPage(300,200,true).append($confirm);
+      createBlackPage(400,200,true).append($confirm);
     });
   });
 
