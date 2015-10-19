@@ -878,7 +878,7 @@ Task.prototype.outdent = function() {
   //console.debug("outdent", this);
 
   //a level must be >1 -> cannot escape from root
-  if (this.level <= 1)
+  if (this.level <= 0)
     return false;
 
   var ret = false;
