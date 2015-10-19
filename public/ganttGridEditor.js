@@ -112,7 +112,7 @@ GridEditor.prototype.addTask = function (task, row, hideIfParentCollapsed) {
   //[expand]
   if(hideIfParentCollapsed)
   {
-    if(task.collapsed) taskRow.find(".exp-controller").removeClass('exp');
+    if(collapsedTasks[task.id]) taskRow.find(".exp-controller").removeClass('exp');
     var collapsedDescendant = this.master.getCollapsedDescendant();
     if(collapsedDescendant.indexOf(task) >= 0) taskRow.hide();
   }
@@ -199,7 +199,7 @@ GridEditor.prototype.bindRowExpandEvents = function (task, taskRow) {
      var task=self.master.getTask(taskId);
      var descs=task.getDescendant();
      el.toggleClass('exp');
-     task.collapsed = !el.is(".exp");
+     collapsedTasks[task.id] = !el.is(".exp");
     var collapsedDescendant = self.master.getCollapsedDescendant();
 
      if (el.is(".exp")){

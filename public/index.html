@@ -86,6 +86,7 @@ var oldGantt;
 var pendingLoad = false;
 var inited = false;
 var authinfo;
+var collapsedTasks = {};
 
 function showSummary () {
   var summary = $.JST.createFromTemplate({}, 'SUMMARY_PAGE');

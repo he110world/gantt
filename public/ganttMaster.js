@@ -564,6 +564,7 @@ GanttMaster.prototype.saveGantt = function (forTransaction) {
     delete cloned.master;
     delete cloned.rowElement;
     delete cloned.ganttElement;
+    delete cloned.collapsed;
 
     saved.push(cloned);
   }
@@ -1011,7 +1012,7 @@ GanttMaster.prototype.getCollapsedDescendant = function(){
     for (var i = 0; i < allTasks.length; i++) {
        var task = allTasks[i];
        if(collapsedDescendant.indexOf(task) >= 0) continue;
-       if(task.collapsed) collapsedDescendant = collapsedDescendant.concat(task.getDescendant());
+       if(collapsedTasks[task.id]) collapsedDescendant = collapsedDescendant.concat(task.getDescendant());
     }
     return collapsedDescendant;
 }
